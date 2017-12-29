@@ -1,6 +1,5 @@
 class Piece
-  attr_reader :colour
-  attr_accessor :location
+  attr_reader :colour, :location
 
   def initialize(colour, location)
     @colour = colour
@@ -22,6 +21,86 @@ class Pawn < Piece
   end
 
 end
+
+class Knight < Piece
+  attr_reader :icon
+
+  def initialize(colour, location)
+    super
+    @colour == :white ? @icon = "\u265E" : @icon = "\u2658"
+  end
+
+  def moveset
+  end
+
+end
+
+
+class Rook < Piece
+  attr_reader :icon
+
+  def initialize(colour, location)
+    super
+    @colour == :white ? @icon = "\u265C" : @icon = "\u2656"
+  end
+
+  def moveset
+    column + row
+  end
+
+  def column
+    (0..7).map { |i| [i,location[1]] }
+  end
+
+  def row
+    (0..7).map { |i| [location[0],i] }
+  end
+
+end
+
+class Bishop < Piece
+  attr_reader :icon
+
+  def initialize(colour, location)
+    super
+    @colour == :white ? @icon = "\u265D" : @icon = "\u2657"
+  end
+
+  def moveset
+  end
+
+end
+
+
+class Queen < Piece
+  attr_reader :icon
+
+  def initialize(colour, location)
+    super
+    @colour == :white ? @icon = "\u265B" : @icon = "\u2655"
+  end
+
+  def moveset
+  end
+
+end
+
+class King < Piece
+  attr_reader :icon
+
+  def initialize(colour, location)
+    super
+    @colour == :white ? @icon = "\u265A" : @icon = "\u2654"
+  end
+
+  def moveset
+  end
+
+end
+
+
+
+
 
 # pawn = Pawn.new(:white, [3,3])
 # puts pawn.icon.encode('utf-8')

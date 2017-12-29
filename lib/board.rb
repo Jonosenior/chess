@@ -6,10 +6,9 @@ class Board
 
   def initialize
     @contents =
-                [['8',  ' ',' ',' ',' ',' ',' ',' ',' '],
-              #  ['8',  Rook.new(:black, [1,1]), Knight.new(:black, [1,2]),
-              #  Bishop.new(:black, [1,3]),	Queen.new(:black, [1,4]), King.new(:black, [1,5]),
-              #  Bishop.new(:black, [1,6]),	Knight.new(:black, [1,7]), Rook.new(:black, [1,8])],
+              [['8',  Rook.new(:black, [1,1]), Knight.new(:black, [1,2]),
+                Bishop.new(:black, [1,3]),	Queen.new(:black, [1,4]), King.new(:black, [1,5]),
+                Bishop.new(:black, [1,6]),	Knight.new(:black, [1,7]), Rook.new(:black, [1,8])],
               ['7',  Pawn.new(:black, [1,1]), Pawn.new(:black, [1,2]),
                Pawn.new(:black, [1,3]),	Pawn.new(:black, [1,4]), Pawn.new(:black, [1,5]),
                Pawn.new(:black, [1,6]),	Pawn.new(:black, [1,7]), Pawn.new(:black, [1,8])],
@@ -20,18 +19,16 @@ class Board
                ['2',  Pawn.new(:white, [6 ,1]), Pawn.new(:white, [6,2]),
                Pawn.new(:white, [6,3]), Pawn.new(:white, [6,4]), Pawn.new(:white, [6,5]),
                Pawn.new(:white, [6,6]), Pawn.new(:white, [6,7]), Pawn.new(:white, [6,8])],
-               ['1',  ' ',' ',' ',' ',' ',' ',' ',' '],
-              #  ['1',  Rook.new(:white, [8,1]), Knight.new(:white, [8,2]),
-              #  Bishop.new(:white, [8,3]), Queen.new(:white, [8,4]), King.new(:white, [8,5]),
-              #  Bishop.new(:white, [8,6]), Knight.new(:white, [8,7]), Rook.new(:white, [8,8])]
-                ]
+                ['1',  Rook.new(:white, [8,1]), Knight.new(:white, [8,2]),
+                Bishop.new(:white, [8,3]), Queen.new(:white, [8,4]), King.new(:white, [8,5]),
+                Bishop.new(:white, [8,6]), Knight.new(:white, [8,7]), Rook.new(:white, [8,8])]]
   end
 
 
   public
 
   def visualise
-    puts [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map {|square| square.center(3)}.join(" ")
+    puts [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map {|square| square.center(3)}.join(" ") + "\n\n"
 		@contents.map do |line|
 			puts line.map { |square| square =~ /\w|\s/ ? square.center(3) : square.icon.center(3) }.join(" ")
       puts #'   ├────┼────┼────┼────┼────┼────┼────┼────┤'
