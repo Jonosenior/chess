@@ -50,7 +50,10 @@ describe Board do
     end
 
     it 'creates a new piece of same colour as the one on starting square' do
-      board.
+      original_colour = board.contents[6][7].colour
+      board.move([6,7],[5,7])
+      expect(board.contents[5][7].colour).to eq(original_colour)
+
     end
 
     it 'empties the starting square' do
