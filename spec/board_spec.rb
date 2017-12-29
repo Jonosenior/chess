@@ -36,20 +36,50 @@ describe Board do
     it 'returns false if black tries to move a white piece' do
       expect(board.valid_move?([6,7],[5,7],:black)).to be_falsey
     end
+  end
 
-    
+  context '#move' do
+    it 'creates a piece of same class as starting square on target square' do
+      board.move([1,2],[2,2])
+      expect(board.contents[2][2].class).to eq(Pawn)
+    end
 
+    it 'creates a new piece that knows its new location' do
+      board.move([1,2],[2,2])
+      expect(board.contents[2][2].location).to eq([2,2])
+    end
 
+    it 'creates a new piece of same colour as the one on starting square' do
+      board.
+    end
 
-
-
-
+    it 'empties the starting square' do
+      board.move([6,7],[5,7])
+      expect(board.contents[6][7]).to eq(' ')
+    end
 
   end
 
 
 
 # PRIVATE METHODS (IE, LIKELY TO BE PRIVATE:)
+
+  context '#delete_at' do
+    it 'replaces a piece on the board with " "' do
+      board.delete_at([1,2])
+      expect(board.contents[1][2]).to eq(' ')
+    end
+
+  end
+
+  context '#create_new_piece_at' do
+    it 'creates a new piece on an empty square' do
+      pawn = Pawn.new(:white, [6,2])
+      board.create_new_piece_at(pawn, [4,2])
+      expect(board.contents[4][2].class).to eq(Pawn)
+    end
+
+  end
 
   context "#empty_sq?" do
     it "returns true if square is empty" do
