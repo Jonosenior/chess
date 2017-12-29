@@ -33,6 +33,29 @@ class Knight < Piece
   def moveset
   end
 
+  def list_possible_moves
+    legal_moves = []
+    possible_rows.each do |row|
+      possible_columns.each do |col|
+        legal_moves << [row,col] if legal_knight_move?(location, [row,col])
+      end
+    end
+    legal_moves
+  end
+
+  def legal_knight_move?(start_position,finish_position)
+    (start_position[0] - finish_position[0]).abs + (start_position[1] - finish_position[1]).abs == 3
+  end
+
+  def possible_rows
+    [location[0]+2,location[0]+1,location[0]-1,location[0]-2].delete_if {|a| a > 7 || a < 0}
+  end
+
+  def possible_columns
+     [location[1]+2,location[1]+1,location[1]-1,location[1]-2].delete_if {|a| a > 8 || a < 1}
+  end
+
+
 end
 
 
@@ -53,7 +76,7 @@ class Rook < Piece
   end
 
   def row
-    (0..7).map { |i| [location[0],i] }
+    (1..8).map { |i| [location[0],i] }
   end
 
 end
