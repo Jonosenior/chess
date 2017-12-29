@@ -39,7 +39,9 @@ class Board
 	end
 
   def move(start, target)
-    
+    piece = return_piece_at(start)
+    create_new_piece_at(piece, target)
+    delete_at(start)
   end
 
   def valid_move?(start, target, player_colour=nil)
@@ -53,6 +55,14 @@ class Board
   end
 
   #private
+
+  def delete_at(sq)
+    @contents[sq[0]][sq[1]] = ' '
+  end
+
+  def create_new_piece_at(piece, square)
+    @contents[square[0]][square[1]] = (piece.class).new(piece.colour, square)
+  end
 
   def friendly_fire?(piece, target)
     !empty_sq?(target) && piece.colour == target.colour
