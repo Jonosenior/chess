@@ -44,6 +44,7 @@ class Board
   def valid_move?(start, target, player_colour=nil)
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
+    return false if start == target
     piece = return_piece_at(start)
     return false if player_colour != piece.colour
     return false if !target_within_moveset?(start, target, piece)

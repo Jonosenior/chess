@@ -17,6 +17,10 @@ describe Board do
       expect(board.valid_move?([0,1], [-1,1])).to be_falsey
     end
 
+    it 'returns false if target and starting squares are the same' do
+      expect(board.valid_move?([1,2], [1,2])).to be_falsey
+    end
+
     it 'returns true if white pawn asked to move forward one square' do
       expect(board.valid_move?([6,1], [5,1], :white)).to be_truthy
     end
