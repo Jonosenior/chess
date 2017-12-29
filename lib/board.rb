@@ -39,7 +39,7 @@ class Board
 	end
 
   def move(start, target)
-    #puts "You can't do that!" unless valid_move?(start, target)
+    
   end
 
   def valid_move?(start, target, player_colour=nil)
@@ -71,7 +71,7 @@ class Board
   end
 
   def outside_board?(sq)
-    sq[0] > 7 || sq[1] > 8 || sq[1] < 1
+    sq[0] < 0 || sq[0] > 7 || sq[1] > 8 || sq[1] < 1
   end
 
 end

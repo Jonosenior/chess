@@ -37,6 +37,8 @@ describe Board do
       expect(board.valid_move?([6,7],[5,7],:black)).to be_falsey
     end
 
+    
+
 
 
 
