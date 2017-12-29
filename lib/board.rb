@@ -43,13 +43,13 @@ class Board
   end
 
   def valid_move?(start, target)
-    return false if !empty_sq?(start) || !empty_sq?(target)
-    return false if !within_board?(start) || !within_board(target)
+    return false if empty_sq?(start) || empty_sq?(target)
+    return false if !within_board?(start) || !within_board?(target)
     return false if !target_within_moveset?(start, target)
     true
   end
 
-  private
+  #private
 
   def target_within_moveset?(start, target)
     piece = return_piece_at(start)
@@ -72,9 +72,3 @@ class Board
   end
 
 end
-
-@board = Board.new
-@contents = @board.contents
-@board.visualise
-#puts @contents[1][1].icon
-@board.move([6,1],[1])
