@@ -30,17 +30,17 @@ class Knight < Piece
     @colour == :white ? @icon = "\u265E" : @icon = "\u2658"
   end
 
-  def moveset
-  end
+  # def moveset
+  # end
 
-  def list_possible_moves
-    legal_moves = []
+  def moveset
+    possible_moves = []
     possible_rows.each do |row|
       possible_columns.each do |col|
-        legal_moves << [row,col] if legal_knight_move?(location, [row,col])
+        possible_moves << [row,col] if legal_knight_move?(location, [row,col])
       end
     end
-    legal_moves
+    possible_moves
   end
 
   def legal_knight_move?(start_position,finish_position)
@@ -90,6 +90,54 @@ class Bishop < Piece
   end
 
   def moveset
+    x = location[0]
+    y = location[1]
+
+    top_right_diagonal(x,y) + top_left_diagonal(x,y) + bottom_left_diagonal(x,y) + bottom_right_diagonal(x,y)
+  end
+
+  def top_right_diagonal(x,y)
+    tr_diagonal = []
+    until board_limits(x,y)
+      tr_diagonal << [x,y]
+      x -= 1
+      y += 1
+    end
+    tr_diagonal
+  end
+
+  def top_left_diagonal(x,y)
+    tl_diagonal = []
+    until board_limits(x,y)
+      tl_diagonal << [x,y]
+      x -= 1
+      y -= 1
+    end
+    tl_diagonal
+  end
+
+  def bottom_left_diagonal(x,y)
+    bl_diagonal = []
+    until board_limits(x,y)
+      bl_diagonal << [x,y]
+      x += 1
+      y -= 1
+    end
+    bl_diagonal
+  end
+
+  def bottom_right_diagonal(x,y)
+    br_diagonal = []
+    until board_limits(x,y)
+      br_diagonal << [x,y]
+      x += 1
+      y += 1
+    end
+    br_diagonal
+  end
+
+  def board_limits(x,y)
+    x < 0 || x > 7 || y < 1 || y > 8
   end
 
 end

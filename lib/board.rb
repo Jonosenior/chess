@@ -28,6 +28,7 @@ class Board
   public
 
   def visualise
+    puts "\n\n\n"
     puts [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map {|square| square.center(3)}.join(" ") + "\n\n"
 		@contents.map do |line|
 			puts line.map { |square| square =~ /\w|\s/ ? square.center(3) : square.icon.center(3) }.join(" ")
