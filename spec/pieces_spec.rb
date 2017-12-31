@@ -107,3 +107,25 @@ describe Bishop do
     end
   end
 end
+
+describe King do
+
+  describe '#moveset' do
+    context 'located on a central square' do
+      subject(:king) {King.new(:white, [4,4])}
+
+      it 'returns 8 squares' do
+        expect(king.moveset.length).to eq(8)
+      end
+    end
+
+    context 'located on a corner square' do
+      subject(:king) {King.new(:black, [0,8])}
+
+      it 'returns 3 squares' do
+        expect(king.moveset.length).to eq(3)
+      end
+    end
+
+  end
+end

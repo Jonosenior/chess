@@ -6,6 +6,10 @@ class Piece
     @location = location
   end
 
+  def board_limits(x,y)
+    x < 0 || x > 7 || y < 1 || y > 8
+  end
+
 end
 
 class Pawn < Piece
@@ -136,10 +140,6 @@ class Bishop < Piece
     br_diagonal
   end
 
-  def board_limits(x,y)
-    x < 0 || x > 7 || y < 1 || y > 8
-  end
-
 end
 
 
@@ -165,6 +165,10 @@ class King < Piece
   end
 
   def moveset
+    x = location[0]
+    y = location[1]
+
+    [[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1],[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1]].delete_if { board_limits(x,y) }
   end
 
 end
