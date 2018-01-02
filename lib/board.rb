@@ -53,6 +53,27 @@ class Board
     true
   end
 
+  def find_route(start, target)
+    #moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]]]
+    moveset = return_piece_at(start).moveset
+    line = moveset.select {|a| a.include?(target)}.flatten(1)
+    start_index = line.index(start)
+    target_index = line.index(target)
+    line = line.reverse if start_index > target_index
+    route = line[start_index+1...target_index]
+
+    # puts "#{line}"
+    # puts "#{start_index}"
+    # puts "#{target_index}"
+    # puts "#{route}"
+  end
+
+  def route_blocked?(start, target)
+    route = find_route(start, target)
+    return true if route.any? {|square| return_piece_at(square) != ' '}
+    false
+  end
+
   #private
 
   def delete_at(sq)

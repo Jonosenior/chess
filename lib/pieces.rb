@@ -72,7 +72,7 @@ class Rook < Piece
   end
 
   def moveset
-    column + row
+    [column] + [row]
   end
 
   def column
@@ -176,10 +176,16 @@ class King < Piece
 
 end
 
+rook = Rook.new(:white, [0,1])
+puts "#{rook.moveset}"
 
 
-queen = Queen.new(:white, [0,1])
-puts "#{queen.moveset}"
+
+# queen = Queen.new(:white, [0,1])
+# puts "#{queen.moveset}"
+
+# king = King.new(:black, [2,3])
+# puts "#{king.moveset}"
 
 # pawn = Pawn.new(:white, [3,3])
 # puts pawn.icon.encode('utf-8')

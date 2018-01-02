@@ -129,3 +129,39 @@ describe King do
 
   end
 end
+
+# describe Queen do
+#
+#     describe '#moveset' do
+#       context 'located in a corner' do
+#         subject(:queen) { Queen.new(:black, [0,1]) }
+#
+#         it 'returns a square on the same diagonal' do
+#           expect(queen.moveset).to include([7,8])
+#         end
+#
+#         it
+#       end
+#
+#
+#       # context 'located in a central square' do
+#       #   subject(:queen) { queen.new(:white, [4,5]) }
+#       #
+#       #   it 'returns a square in the top right diagonal' do
+#       #     expect(queen.moveset).to include([1,8])
+#       #   end
+#
+#         # it 'returns a square in the top left diagonal' do
+#         #   expect(queen.moveset).to include([1,8])
+#         # end
+#         #
+#         # it 'returns a square in the bottom left diagonal' do
+#         #   expect(queen.moveset).to include([7,2])
+#         # end
+#
+#         # it 'returns a square in the bottom right diagonal' do
+#         #   expect(queen.moveset).to include([6,7])
+#         # end
+#     #  end
+#     end
+#   end
