@@ -44,7 +44,7 @@ class Knight < Piece
         possible_moves << [row,col] if legal_knight_move?(location, [row,col])
       end
     end
-    possible_moves
+    possible_moves.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
   def legal_knight_move?(start_position,finish_position)
@@ -52,11 +52,11 @@ class Knight < Piece
   end
 
   def possible_rows
-    [location[0]+2,location[0]+1,location[0]-1,location[0]-2].delete_if {|a| a > 7 || a < 0}
+    [location[0]+2,location[0]+1,location[0]-1,location[0]-2]#.delete_if {|a| a > 7 || a < 0}
   end
 
   def possible_columns
-     [location[1]+2,location[1]+1,location[1]-1,location[1]-2].delete_if {|a| a > 8 || a < 1}
+     [location[1]+2,location[1]+1,location[1]-1,location[1]-2]#.delete_if {|a| a > 8 || a < 1}
   end
 
 
@@ -149,9 +149,12 @@ class Queen < Piece
   def initialize(colour, location)
     super
     @colour == :white ? @icon = "\u265B" : @icon = "\u2655"
+    @rook = Rook.new(colour, location)
+    @bishop = Bishop.new(colour, location)
   end
 
   def moveset
+    @rook.moveset + @bishop.moveset
   end
 
 end
@@ -168,14 +171,15 @@ class King < Piece
     x = location[0]
     y = location[1]
 
-    [[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1],[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1]].delete_if { board_limits(x,y) }
+    [[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1],[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1]].delete_if { |a| board_limits(a[0],a[1]) }
   end
 
 end
 
 
 
-
+queen = Queen.new(:white, [0,1])
+puts "#{queen.moveset}"
 
 # pawn = Pawn.new(:white, [3,3])
 # puts pawn.icon.encode('utf-8')
