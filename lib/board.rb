@@ -50,10 +50,19 @@ class Board
     return false if player_colour != piece.colour
     return false if !target_within_moveset?(start, target, piece)
     return false if friendly_fire?(piece, target)
+    return false if route_blocked?(start, target)
     true
   end
 
-  def find_route(start, target)
+  #private
+
+  def route_blocked?(start, target)
+    route = intermediary_squares(start, target)
+    return true if route.any? {|square| return_piece_at(square) != ' '}
+    false
+  end
+
+  def intermediary_squares(start, target)
     #moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]]]
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
@@ -68,14 +77,6 @@ class Board
     # puts "#{route}"
   end
 
-  def route_blocked?(start, target)
-    route = find_route(start, target)
-    return true if route.any? {|square| return_piece_at(square) != ' '}
-    false
-  end
-
-  #private
-
   def delete_at(sq)
     @contents[sq[0]][sq[1]] = ' '
   end
@@ -89,7 +90,8 @@ class Board
   end
 
   def target_within_moveset?(start, target, piece)
-    piece.moveset.include?(target) || piece.moveset == target
+    piece.moveset.any? {|a| a.include?(target)} || a.include?(target)
+    #piece.moveset.include?(target) || piece.moveset == target
   end
 
   def return_piece_at(sq)
