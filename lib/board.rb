@@ -90,7 +90,7 @@ class Board
   end
 
   def target_within_moveset?(start, target, piece)
-    piece.moveset.any? {|a| a.include?(target)} || a.include?(target)
+    piece.moveset.each {|a| a.include?(target) || a.include?(target) }
     #piece.moveset.include?(target) || piece.moveset == target
   end
 
@@ -107,3 +107,7 @@ class Board
   end
 
 end
+
+board = Board.new
+pawn = Pawn.new(:white, [6,1])
+puts board.target_within_moveset?([6,1],[5,1], pawn)

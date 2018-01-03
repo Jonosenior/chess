@@ -5,36 +5,30 @@ require_relative 'player'
 
 class Game
 
-  def start_game
+  def start
     @board = Board.new
     @contents = @board.contents
     @board.visualise
     create_players
     set_current_player
-    # @board.move([6,1],[5,1])
-    # @board.visualise
-    # @board.move([5,1],[4,4])
-    # @board.visualise
   end
 
   def new_turn
     puts "TURN: #{@current_player}"
     moves = @current_player.elicit_move
-    start = move[0]
-    target = move[1]
-    while !@board.valid_move?(start, target)
+    puts start = moves[0]
+    puts target = moves[1]
+    # puts start.class
+    # puts start[0].class
+    puts @board.valid_move?(start, target, @current_player.colour)
+    # puts @board.route_blocked?(start, target)
+    while !@board.valid_move?(start, target, @current_player.colour)
       puts "Not a valid move!"
       new_turn
     end
     @board.move(start, target)
     @board.visualise
   end
-
-  # def new_move
-  #   move = @current_player.elicit_move
-  #   while !@board.valid_move
-  # end
-
 
   def create_players
     @players = [Player.new(1, :white)] << Player.new(2, :black)
@@ -52,8 +46,9 @@ class Game
 
 end
 
-Game.new.start_game
-
+game = Game.new
+game.start
+game.new_turn
 
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
