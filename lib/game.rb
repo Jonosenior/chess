@@ -9,11 +9,24 @@ class Game
     @board = Board.new
     @contents = @board.contents
     @board.visualise
-    #create_players
-    #set_current_player
-    @board.move([6,1],[5,1])
-    @board.visualise
-    @board.move([5,1],[4,4])
+    create_players
+    set_current_player
+    # @board.move([6,1],[5,1])
+    # @board.visualise
+    # @board.move([5,1],[4,4])
+    # @board.visualise
+  end
+
+  def new_turn
+    puts "TURN: #{@current_player}"
+    moves = @current_player.elicit_move
+    start = move[0]
+    target = move[1]
+    while !@board.valid_move?(start, target)
+      puts "Not a valid move!"
+      new_turn
+    end
+    @board.move(start, target)
     @board.visualise
   end
 
