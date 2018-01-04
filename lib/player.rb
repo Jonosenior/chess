@@ -20,7 +20,28 @@ class Player
   end
 
   def convert_to_move(input)
-    input.scan(/\d+/).map { |b| b.to_s.chars.map(&:to_i) }
+    moves = alphanumeric_pairs(input)
+    moves.map { |move| convert(move) }
+  end
+
+  def convert(input)
+    row = convert_row(input[1].to_i)
+    column = convert_column(input[0])
+    [row, column]
+  end
+
+  def alphanumeric_pairs(input)
+    input.scan(/[a-hA-H][1-8]/)
+  end
+
+  def convert_column(letter)
+    columns = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "H" => 8}
+    columns[letter.upcase]
+  end
+
+  def convert_row(number)
+    rows = {8 => 0, 7 => 1, 6 => 2, 5 => 3, 4 => 4, 3 => 5, 2 => 6, 1 => 7}
+    rows[number]
   end
 
 end
