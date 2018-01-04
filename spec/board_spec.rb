@@ -4,45 +4,67 @@ describe Board do
   subject(:board) { Board.new }
 
 
-  context "#valid_move?" do
-    it "returns false if the starting square is empty" do
-      expect(board.valid_move?([4,3], [4,4])).to be_falsey
-    end
+  describe "#valid_move?" do
 
-    it 'returns false if starting square is outside the board' do
-      expect(board.valid_move?([10,3], [11,3])).to be_falsey
-    end
+    context "on opening board" do
 
-    it 'returns false if target square is outside the board' do
-      expect(board.valid_move?([0,1], [-1,1])).to be_falsey
-    end
+      context "given empty starting square" do
+        it 'returns false' do
+          expect(board.valid_move?([4,3], [4,4])).to be_falsey
+        end
+      end
 
-    it 'returns false if target and starting squares are the same' do
-      expect(board.valid_move?([1,2], [1,2])).to be_falsey
-    end
+      context "given starting square outside the board" do
+        it 'returns false' do
+          expect(board.valid_move?([10,3], [11,3])).to be_falsey
+        end
+      end
 
-    it 'returns true if white pawn asked to move forward one square' do
-      expect(board.valid_move?([6,1], [5,1], :white)).to be_truthy
-    end
+      context "given a target square outside the board" do
+        it 'returns false' do
+          expect(board.valid_move?([0,1], [-1,1])).to be_falsey
+        end
+      end
 
-    it 'returns true if black pawn asked to move forward one square' do
-      expect(board.valid_move?([1,1], [2,1], :black)).to be_truthy
-    end
+      context "given same target and starting squares" do
+        it 'returns false' do
+          expect(board.valid_move?([1,2], [1,2])).to be_falsey
+        end
+      end
 
-    it 'returns false if asked to move pawn three steps forward' do
-      expect(board.valid_move?([1,1],[4,1])).to be_falsey
-    end
+      context "if asked to move white pawn forward one square" do
+        it 'returns true' do
+          expect(board.valid_move?([6,1], [5,1], :white)).to be_truthy
+        end
+      end
 
-    it 'returns false if white tries to move a black piece' do
-      expect(board.valid_move?([1,1],[2,1],:white)).to be_falsey
-    end
+      context 'if asked to move black pawn forward one square' do
+        it 'returns true' do
+          expect(board.valid_move?([1,1], [2,1], :black)).to be_truthy
+        end
+      end
 
-    it 'returns false if black tries to move a white piece' do
-      expect(board.valid_move?([6,7],[5,7],:black)).to be_falsey
+      context 'if asked to move pawn three steps forward' do
+        it 'returns false' do
+          expect(board.valid_move?([1,1],[4,1])).to be_falsey
+        end
+      end
+
+      context 'if white tries to move a black piece' do
+        it 'returns false' do
+          expect(board.valid_move?([1,1],[2,1],:white)).to be_falsey
+        end
+      end
+
+      context 'if black tries to move a white piece' do
+        it 'returns false' do
+          expect(board.valid_move?([6,7],[5,7],:black)).to be_falsey
+        end
+      end
     end
   end
 
-  context '#move' do
+  describe '#move' do
     it 'creates a piece of same class as starting square on target square' do
       board.move([1,2],[2,2])
       expect(board.contents[2][2].class).to eq(Pawn)
@@ -71,7 +93,7 @@ describe Board do
 
 # PRIVATE METHODS (IE, LIKELY TO BE PRIVATE:)
 
-  context '#delete_at' do
+  describe '#delete_at' do
     it 'replaces a piece on the board with " "' do
       board.delete_at([1,2])
       expect(board.contents[1][2]).to eq(' ')
@@ -79,7 +101,7 @@ describe Board do
 
   end
 
-  context '#create_new_piece_at' do
+  describe '#create_new_piece_at' do
     it 'creates a new piece on an empty square' do
       pawn = Pawn.new(:white, [6,2])
       board.create_new_piece_at(pawn, [4,2])
@@ -88,7 +110,7 @@ describe Board do
 
   end
 
-  context "#empty_sq?" do
+  describe "#empty_sq?" do
     it "returns true if square is empty" do
       expect(board.empty_sq?([4,3])).to be_truthy
     end
@@ -98,7 +120,7 @@ describe Board do
     end
   end
 
-  context "outside_board?" do
+  describe "outside_board?" do
     it "returns false if square is within the board" do
       expect(board.outside_board?([5,1])).to be_falsey
     end
