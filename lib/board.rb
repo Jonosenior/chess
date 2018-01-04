@@ -50,7 +50,9 @@ class Board
     return false if player_colour != piece.colour
     return false if !target_within_moveset?(start, target, piece)
     return false if friendly_fire?(piece, target)
-    return false if route_blocked?(start, target)
+    if piece.class == Rook || piece.class == Bishop || piece.class == Queen
+      return false if route_blocked?(start, target)
+    end
     true
   end
 
@@ -58,6 +60,7 @@ class Board
 
   def route_blocked?(start, target)
     route = intermediary_squares(start, target)
+    #puts "ROUTE: #{route}"
     return true if route.any? {|square| return_piece_at(square) != ' '}
     false
   end
@@ -66,11 +69,17 @@ class Board
     #moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]]]
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
-    start_index = line.index(start)
-    target_index = line.index(target)
-    line = line.reverse if start_index > target_index
+    start_index, target_index = line.index(start), line.index(target)
+    # puts "START #{start_index}"
+    # puts "TARGET #{target_index}"
+    # puts "#{line}"
+    if start_index > target_index
+      line = line.reverse
+      start_index, target_index = target_index, start_index
+    end
+    #puts "#{line}"
+    #puts "LINE: #{line[start_index...target_index]}"
     route = line[start_index+1...target_index]
-
     # puts "#{line}"
     # puts "#{start_index}"
     # puts "#{target_index}"
@@ -86,11 +95,14 @@ class Board
   end
 
   def friendly_fire?(piece, target)
-    !empty_sq?(target) && piece.colour == target.colour
+    !empty_sq?(target) && piece.colour == return_piece_at(target).colour
   end
 
   def target_within_moveset?(start, target, piece)
-    piece.moveset.each {|a| a.include?(target) || a.include?(target) }
+    #puts "#{piece.moveset.flatten(1)}"
+    #piece.moveset.include?(target)
+    piece.moveset == target || piece.moveset.flatten(1).include?(target)
+    #piece.moveset.each {|a| a.include?(target) || a == target }
     #piece.moveset.include?(target) || piece.moveset == target
   end
 
@@ -108,6 +120,32 @@ class Board
 
 end
 
-board = Board.new
-pawn = Pawn.new(:white, [6,1])
-puts board.target_within_moveset?([6,1],[5,1], pawn)
+# board = Board.new
+# pawn = Pawn.new(:white, [6,1])
+# puts "PAWN"
+# start = [6,1]
+# target = [5,1]
+# puts board.target_within_moveset?([6,1],[5,1], pawn)
+# puts board.valid_move?([6,1],[5,1], :white)
+# puts false if board.outside_board?(start) || board.outside_board?(target)
+# puts false if board.empty_sq?(start)
+# puts false if start == target
+# piece = board.return_piece_at(start)
+# return false if player_colour != piece.colour
+# return false if !target_within_moveset?(start, target, piece)
+# return false if friendly_fire?(piece, target)
+# return false if route_blocked?(start, target)
+#
+
+
+
+# rook = Rook.new(:black, [2,1])
+# board.visualise
+# board.delete_at([6,1])
+# board.visualise
+# #puts board.target_within_moveset?([2,1],[2,8], rook)
+# puts board.valid_move?([7,1], [0,1], :white)
+# puts board.route_blocked?([7,1], [0,1])
+
+
+#[[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]]]

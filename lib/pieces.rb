@@ -176,8 +176,8 @@ class King < Piece
 
 end
 
-rook = Rook.new(:white, [0,1])
-puts "#{rook.moveset}"
+# rook = Rook.new(:white, [0,1])
+# puts "#{rook.moveset}"
 
 
 
