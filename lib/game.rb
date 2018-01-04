@@ -14,21 +14,26 @@ class Game
   end
 
   def new_turn
-    puts "TURN: #{@current_player}"
-    moves = @current_player.elicit_move
-    puts start = moves[0]
-    puts target = moves[1]
-    # puts start.class
-    # puts start[0].class
-    puts @board.valid_move?(start, target, @current_player.colour)
-    # puts @board.route_blocked?(start, target)
-    while !@board.valid_move?(start, target, @current_player.colour)
-      puts "Not a valid move!"
-      new_turn
+    loop do
+      puts "TURN: #{@current_player.name}"
+      moves = @current_player.elicit_move
+      start = moves[0]
+      target = moves[1]
+      if !@board.valid_move?(start, target, @current_player.colour)
+        puts "Not a valid move!"
+        redo
+      end
+      @board.move(start, target)
+      @board.visualise
+      complete_turn
     end
-    @board.move(start, target)
-    @board.visualise
   end
+
+  def complete_turn
+    switch_current_player
+  end
+
+
 
   def create_players
     @players = [Player.new(1, :white)] << Player.new(2, :black)
@@ -48,7 +53,7 @@ end
 
 game = Game.new
 game.start
-game.new_turn
+5.times { game.new_turn }
 
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]

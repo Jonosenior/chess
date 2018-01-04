@@ -42,17 +42,17 @@ class Board
     delete_at(start)
   end
 
-  def valid_move?(start, target, player_colour=nil)
+  def valid_move?(start, target, player_colour)
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
     return false if start == target
     piece = return_piece_at(start)
     return false if player_colour != piece.colour
     return false if !target_within_moveset?(target, piece.moveset)
-    # return false if friendly_fire?(piece, target)
-    # if piece.class == Rook || piece.class == Bishop || piece.class == Queen
-    #   return false if route_blocked?(start, target)
-    # end
+    return false if friendly_fire?(piece, target)
+    if piece.class == Rook || piece.class == Bishop || piece.class == Queen
+      return false if route_blocked?(start, target)
+    end
     true
   end
 
