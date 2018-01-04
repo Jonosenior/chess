@@ -22,12 +22,12 @@ describe Rook do
 
     it 'returns the same column as location' do
       rook = Rook.new(:white, [7,1])
-      expect(rook.moveset).to include([0,1])
+      expect(rook.moveset.flatten(1)).to include([0,1])
       #,[5,1],[4,1],[3,1],[2,1],[1,1],[0,1]]
     end
     it 'returns the same row as location' do
       rook = Rook.new(:white, [7,1])
-      expect(rook.moveset).to include([7,8])
+      expect(rook.moveset.flatten(1)).to include([7,8])
     end
 
     it 'doesn\'t return a diagonal' do
@@ -61,6 +61,16 @@ describe Knight do
 
       it 'returns the correct squares' do
         expect(knight.moveset).to include([1,3],[2,2])
+      end
+    end
+
+    context 'located on starting square' do
+      context 'black knight' do
+        subject(:knight) {Knight.new(:black, [0,2])}
+
+          it 'returns correct squares' do
+            expect(knight.moveset).to include([2,1],[2,3],[1,4])
+          end
       end
     end
 

@@ -10,25 +10,25 @@ describe Board do
 
       context "given empty starting square" do
         it 'returns false' do
-          expect(board.valid_move?([4,3], [4,4])).to be_falsey
+          expect(board.valid_move?([4,3], [4,4], :white)).to be_falsey
         end
       end
 
       context "given starting square outside the board" do
         it 'returns false' do
-          expect(board.valid_move?([10,3], [11,3])).to be_falsey
+          expect(board.valid_move?([10,3], [11,3], :white)).to be_falsey
         end
       end
 
       context "given a target square outside the board" do
         it 'returns false' do
-          expect(board.valid_move?([0,1], [-1,1])).to be_falsey
+          expect(board.valid_move?([0,1], [-1,1], :white)).to be_falsey
         end
       end
 
       context "given same target and starting squares" do
         it 'returns false' do
-          expect(board.valid_move?([1,2], [1,2])).to be_falsey
+          expect(board.valid_move?([1,2], [1,2], :black)).to be_falsey
         end
       end
 
@@ -46,7 +46,7 @@ describe Board do
 
       context 'if asked to move pawn three steps forward' do
         it 'returns false' do
-          expect(board.valid_move?([1,1],[4,1])).to be_falsey
+          expect(board.valid_move?([1,1],[4,1], :black)).to be_falsey
         end
       end
 
@@ -61,6 +61,16 @@ describe Board do
           expect(board.valid_move?([6,7],[5,7],:black)).to be_falsey
         end
       end
+
+      context 'the knight' do
+        context 'if asked to jump squares' do
+          it 'returns true' do
+            expect(board.valid_move?([0,2],[2,3],:black)).to be_truthy
+          end
+        end
+      end
+
+
     end
   end
 
@@ -85,6 +95,54 @@ describe Board do
     it 'empties the starting square' do
       board.move([6,7],[5,7])
       expect(board.contents[6][7]).to eq(' ')
+    end
+
+  end
+
+  describe '#target_within_moveset?' do
+    context 'passed 3d array' do
+      moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [2, 8]]]
+
+      context 'containing the target' do
+        it 'returns true' do
+          expect(board.target_within_moveset?([2,4], moveset)).to be_truthy
+        end
+      end
+
+      context 'not containing the target' do
+        it 'returns false' do
+          expect(board.target_within_moveset?([5,5], moveset)).to be_falsey
+        end
+      end
+    end
+
+    context 'passed 2d array' do
+      moveset = [[2, 3], [2, 1], [1, 4]]
+      context 'containing the target' do
+        it 'returns true' do
+          expect(board.target_within_moveset?([2,3], moveset)).to be_truthy
+        end
+      end
+
+      context 'not containing the target' do
+        it 'returns false' do
+          expect(board.target_within_moveset?([4,1], moveset)).to be_falsey
+        end
+      end
+    end
+
+    context 'passed array of one element' do
+      moveset = [3,1]
+      context 'equal to the target' do
+        it 'returns true' do
+          expect(board.target_within_moveset?([3,1], moveset)).to be_truthy
+        end
+      end
+      context 'not equal to the target' do
+        it 'returns false' do
+          expect(board.target_within_moveset?([3,2], moveset)).to be_falsey
+        end
+      end
     end
 
   end

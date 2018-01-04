@@ -34,9 +34,6 @@ class Knight < Piece
     @colour == :white ? @icon = "\u265E" : @icon = "\u2658"
   end
 
-  # def moveset
-  # end
-
   def moveset
     possible_moves = []
     possible_rows.each do |row|
@@ -189,6 +186,9 @@ end
 
 # pawn = Pawn.new(:white, [3,3])
 # puts pawn.icon.encode('utf-8')
+#
+# knight = Knight.new(:black, [0,2])
+# puts "#{knight.moveset}"
 
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
