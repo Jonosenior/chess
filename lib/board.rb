@@ -61,8 +61,7 @@ class Board
   def route_blocked?(start, target)
     route = intermediary_squares(start, target)
     #puts "ROUTE: #{route}"
-    return true if route.any? {|square| return_piece_at(square) != ' '}
-    false
+    route.any? {|square| return_piece_at(square) != ' '}
   end
 
   def intermediary_squares(start, target)
