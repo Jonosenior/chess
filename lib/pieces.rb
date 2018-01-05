@@ -173,8 +173,8 @@ class King < Piece
 
 end
 
-bishop = Bishop.new(:white, [0,3])
-puts "#{bishop.moveset}"
+# bishop = Bishop.new(:white, [0,3])
+# puts "#{bishop.moveset}"
 
 # rook = Rook.new(:white, [0,1])
 # puts "#{rook.moveset}"

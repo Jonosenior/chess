@@ -56,7 +56,17 @@ class Board
     true
   end
 
+
   #private
+
+  def locate_king(player_colour)
+    @contents.each_with_index do |row, i|
+      @contents.each_with_index do |row, j|
+        piece = return_piece_at([i,j])
+        return [i,j] if piece.class == King && piece.colour == player_colour
+      end
+    end
+  end
 
   def route_blocked?(start, target)
     route = intermediary_squares(start, target)
@@ -115,7 +125,12 @@ class Board
 
 end
 
-# board = Board.new
+ # board = Board.new
+ # puts board.locate_king(:white)
+# board.contents.each do |piece|
+#   puts piece.location# if piece.class == King && piece.colour == player_colour
+# end
+
 # puts "#{board.return_piece_at([0,2]).moveset}"
 
 # start = [0,2]
