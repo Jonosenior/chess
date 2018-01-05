@@ -94,7 +94,7 @@ class Bishop < Piece
     x = location[0]
     y = location[1]
 
-    top_right_diagonal(x,y) + top_left_diagonal(x,y) + bottom_left_diagonal(x,y) + bottom_right_diagonal(x,y)
+    [top_right_diagonal(x,y)] + [top_left_diagonal(x,y)] + [bottom_left_diagonal(x,y)] + [bottom_right_diagonal(x,y)]
   end
 
   def top_right_diagonal(x,y)
@@ -172,6 +172,9 @@ class King < Piece
   end
 
 end
+
+bishop = Bishop.new(:white, [0,3])
+puts "#{bishop.moveset}"
 
 # rook = Rook.new(:white, [0,1])
 # puts "#{rook.moveset}"
