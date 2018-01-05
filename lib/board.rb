@@ -42,6 +42,19 @@ class Board
     delete_at(start)
   end
 
+  def check?(king_location, player_colour)
+    @contents.each_with_index do |row, i|
+      @contents.each_with_index do |row, j|
+        piece = return_piece_at([i,j])
+        next if piece.class == String
+        if piece.moveset.include?(king_location) && valid_move?(piece.location, king_location, player_colour)
+          return true
+        end
+      end
+    end
+    false
+  end
+
   def valid_move?(start, target, player_colour)
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
@@ -125,8 +138,9 @@ class Board
 
 end
 
- # board = Board.new
- # puts board.locate_king(:white)
+ board = Board.new
+ king_location = board.locate_king(:white)
+ puts board.check?(king_location, :black)
 # board.contents.each do |piece|
 #   puts piece.location# if piece.class == King && piece.colour == player_colour
 # end
