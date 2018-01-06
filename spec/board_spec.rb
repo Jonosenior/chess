@@ -105,7 +105,7 @@ describe Board do
   describe '#check?' do
     context 'opening board' do
       it 'returns false' do
-        expect(board.check?([0,4],:black,:white)).to be_falsey
+        expect(board.check?([0,5],:black,:white)).to be_falsey
       end
     end
 
@@ -120,7 +120,7 @@ describe Board do
       it 'returns true' do
         board.move([7,3],[2,7])
         board.delete_at([1,6])
-        expect(board.check?([0,4],:black,:white)).to be_truthy
+        expect(board.check?([0,5],:black,:white)).to be_truthy
       end
     end
 
