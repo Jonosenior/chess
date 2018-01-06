@@ -42,19 +42,6 @@ class Board
     delete_at(start)
   end
 
-  def check?(king_location, player_colour)
-    @contents.each_with_index do |row, i|
-      @contents.each_with_index do |row, j|
-        piece = return_piece_at([i,j])
-        next if piece.class == String
-        if piece.moveset.include?(king_location) && valid_move?(piece.location, king_location, player_colour)
-          return true
-        end
-      end
-    end
-    false
-  end
-
   def valid_move?(start, target, player_colour)
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
@@ -69,14 +56,25 @@ class Board
     true
   end
 
+  def check?(king_location, king_colour, player_colour)
+    king_location = locate_king(king_colour)
+    @contents.each do |row|
+      row.each do |piece|
+        next if piece.class == String
+        moveset = piece.moveset
+        return true if target_within_moveset?(king_location, moveset) && valid_move?(piece.location, king_location, player_colour)
+      end
+    end
+    false
+  end
 
   #private
 
-  def locate_king(player_colour)
+  def locate_king(king_colour)
     @contents.each_with_index do |row, i|
       @contents.each_with_index do |row, j|
         piece = return_piece_at([i,j])
-        return [i,j] if piece.class == King && piece.colour == player_colour
+        return [i,j] if piece.class == King && piece.colour == king_colour
       end
     end
   end
@@ -138,9 +136,13 @@ class Board
 
 end
 
- board = Board.new
- king_location = board.locate_king(:white)
- puts board.check?(king_location, :black)
+# board = Board.new
+# board.check?
+#board.contents.each { |a| a.each { |b| puts b.class}}
+#board.check?([0,4],:black,:white)
+#board.contents.each { |a| a.each {|b| puts b.class}}
+ # king_location = board.locate_king(:white)
+ # puts board.check?(king_location, :black)
 # board.contents.each do |piece|
 #   puts piece.location# if piece.class == King && piece.colour == player_colour
 # end
@@ -151,6 +153,7 @@ end
 # target = [2,3]
 # piece = board.return_piece_at(start)
 # puts "#{piece.moveset}"
+
 # puts "#{piece.moveset.flatten(2)}"
 # puts "#{board.valid_move?(start, target, :black)}"
 #puts "#{board.}"

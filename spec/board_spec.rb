@@ -99,6 +99,37 @@ describe Board do
 
   end
 
+
+
+
+  describe '#check?' do
+    context 'opening board' do
+      it 'returns false' do
+        expect(board.check?([0,4],:black,:white)).to be_falsey
+      end
+    end
+
+    context 'white king in check' do
+      it 'returns true' do
+        board.move([0,1],[6,5])
+        expect(board.check?([7,5],:white,:black)).to be_truthy
+      end
+    end
+
+    context 'black king in check' do
+      it 'returns true' do
+        board.move([7,3],[2,7])
+        board.delete_at([1,6])
+        expect(board.check?([0,4],:black,:white)).to be_truthy
+      end
+    end
+
+  end
+
+
+
+
+
   describe '#target_within_moveset?' do
     context 'passed 3d array' do
       moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [2, 8]]]
