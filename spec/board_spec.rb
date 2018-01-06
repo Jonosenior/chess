@@ -70,6 +70,19 @@ describe Board do
         end
       end
 
+      context 'the queen' do
+        context 'attacking the enemy king' do
+          it 'returns true' do
+            board.move([7,1],[5,5])
+            board.delete_at([1,5])
+            board.visualise
+            expect(board.valid_move?([5,5],[0,5],:white)).to be_truthy
+            # puts board.return_piece_at([5,5]).class
+            # puts "#{board.return_piece_at([5,5]).moveset}"
+          end
+        end
+      end
+
 
     end
   end
@@ -117,38 +130,64 @@ describe Board do
     end
 
     context 'black king in check' do
-      it 'returns true' do
-        board.move([7,3],[2,7])
-        board.delete_at([1,6])
-        expect(board.check?([0,5],:black,:white)).to be_truthy
-      end
-    end
-
-  end
-
-
-
-  describe 'checkmate?' do
-    context 'king is in check' do
-      context 'king can\'t move out of check' do
-        it 'returns false' do
-          board.move([7,3],[2,7])
-          board.delete_at([1,6])
-          expect(board.checkmate?(:black,:white)).to be_truthy
-        end
-      end
-      
-      context 'king can move out of check' do
+      context 'attacked by white bishop' do
         it 'returns true' do
           board.move([7,3],[2,7])
           board.delete_at([1,6])
+          expect(board.check?([0,5],:black,:white)).to be_truthy
+        end
+      end
+      context 'attacked by white queen' do
+        it 'returns true' do
+          #board.move([7,3],[2,7])
+          board.move([7,4],[5,5])
+          #board.delete_at([1,6])
           board.delete_at([1,5])
-          #board.visualise
-          expect(board.checkmate?(:black,:white)).to be_falsey
+          puts board.return_piece_at([5,5]).class
+          puts "#{board.return_piece_at([5,5]).moveset}"
+          board.visualise
+          expect(board.check?([0,5],:black,:white)).to be_truthy
         end
       end
     end
+
   end
+
+
+
+  # describe 'checkmate?' do
+  #   context 'king is in check' do
+  #     context 'king can\'t move out of check' do
+  #       it 'returns false' do
+  #         board.move([7,3],[2,7])
+  #         board.delete_at([1,6])
+  #         expect(board.checkmate?(:black,:white)).to be_truthy
+  #       end
+  #     end
+  #
+  #     context 'king can move out of check' do
+  #       it 'returns true' do
+  #         board.move([7,3],[2,7])
+  #         board.delete_at([1,6])
+  #         board.delete_at([1,5])
+  #         #board.visualise
+  #         expect(board.checkmate?(:black,:white)).to be_falsey
+  #       end
+  #
+  #       # context 'but new position is also check' do
+  #       #   it 'returns false' do
+  #       #     board.move([7,3],[2,7])
+  #       #     board.move([7,4],[5,5])
+  #       #     board.delete_at([1,6])
+  #       #     board.delete_at([1,5])
+  #       #     board.visualise
+  #       #     expect(board.checkmate?(:black,:white)).to be_truthy
+  #       #   end
+  #       # end
+  #     end
+  #
+  #   end
+  # end
 
   describe '#target_within_moveset?' do
     context 'passed 3d array' do
@@ -158,10 +197,18 @@ describe Board do
         it 'returns true' do
           expect(board.target_within_moveset?([2,4], moveset)).to be_truthy
         end
+
+        context 'with Queen attacking' do
+          it 'returns true' do
+            moveset = [[[0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5]], [[5, 1], [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8]], [[5, 5], [4, 6], [3, 7], [2, 8]], [[5, 5], [4, 4], [3, 3], [2, 2], [1, 1]], [[5, 5], [6, 4], [7, 3]], [[5, 5], [6, 6], [7, 7]]]
+            expect(board.target_within_moveset?([0,5], moveset)).to be_truthy
+          end
+        end
       end
 
       context 'not containing the target' do
         it 'returns false' do
+          moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [2, 8]]]
           expect(board.target_within_moveset?([5,5], moveset)).to be_falsey
         end
       end
@@ -195,6 +242,8 @@ describe Board do
         end
       end
     end
+
+    context 'passed '
 
   end
 
