@@ -128,7 +128,27 @@ describe Board do
 
 
 
-
+  describe 'checkmate?' do
+    context 'king is in check' do
+      context 'king can\'t move out of check' do
+        it 'returns false' do
+          board.move([7,3],[2,7])
+          board.delete_at([1,6])
+          expect(board.checkmate?(:black,:white)).to be_truthy
+        end
+      end
+      
+      context 'king can move out of check' do
+        it 'returns true' do
+          board.move([7,3],[2,7])
+          board.delete_at([1,6])
+          board.delete_at([1,5])
+          #board.visualise
+          expect(board.checkmate?(:black,:white)).to be_falsey
+        end
+      end
+    end
+  end
 
   describe '#target_within_moveset?' do
     context 'passed 3d array' do

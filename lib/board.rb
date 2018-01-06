@@ -56,8 +56,24 @@ class Board
     true
   end
 
-  def check?(king_location, king_colour, player_colour)
+  def checkmate?(king_colour, player_colour)
+    return false if can_king_escape?(king_colour, player_colour)
+    true
+  end
+
+  def can_king_escape?(king_colour, player_colour)
     king_location = locate_king(king_colour)
+    king = return_piece_at(king_location)
+    #puts king.location
+    valid_moves = king.moveset.select {|move| valid_move?(king_location, move, king_colour)}
+    #puts "#{valid_moves}"
+    out_of_check = valid_moves.select {|move| !check?(move, king_colour, player_colour)}
+    #puts "#{out_of_check}"
+    !out_of_check.empty?
+  end
+
+  def check?(king_location, king_colour, player_colour)
+    #king_location = locate_king(king_colour)
     @contents.each do |row|
       row.each do |piece|
         next if piece.class == String
