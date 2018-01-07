@@ -64,11 +64,11 @@ class Board
   def can_king_escape?(king_colour, player_colour)
     king_location = locate_king(king_colour)
     king = return_piece_at(king_location)
-    puts king.location
+    #puts king.location
     valid_moves = king.moveset.select {|move| valid_move?(king_location, move, king_colour)}
-    puts "#{valid_moves}"
+    #puts "#{valid_moves}"
     out_of_check = valid_moves.select {|move| !check?(move, king_colour, player_colour)}
-    puts "#{out_of_check}"
+    #puts "#{out_of_check}"
     !out_of_check.empty?
   end
 
@@ -77,16 +77,29 @@ class Board
     #puts king_location
     @contents.each do |row|
       row.each do |piece|
-        next if piece.class == String
+        next if piece.class == String || piece.colour == king_colour
       #  puts "#{piece.moveset}" if piece.class == Queen
         moveset = piece.moveset
-        return true if target_within_moveset?(king_location, moveset) && valid_move?(piece.location, king_location, player_colour)
+        return true if valid_move?(piece.location, king_location, player_colour)
       end
     end
     false
   end
 
   #private
+
+  def square_under_attack?(location, player_colour)
+    @contents.each do |row|
+      row.each do |piece|
+
+      end
+    end
+
+  end
+
+  def other_colour(colour)
+    (colour == :white) ? :black : :white
+  end
 
   def locate_king(king_colour)
     @contents.each_with_index do |row, i|
@@ -157,6 +170,7 @@ class Board
 end
 
 # board = Board.new
+# puts board.other_colour(:black)
 # board.check?
 #board.contents.each { |a| a.each { |b| puts b.class}}
 #board.check?([0,4],:black,:white)
