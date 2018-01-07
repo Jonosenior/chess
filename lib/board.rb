@@ -78,7 +78,7 @@ class Board
     @contents.each do |row|
       row.each do |piece|
         next if piece.class == String
-        puts "#{piece.moveset}" if piece.class == Queen
+      #  puts "#{piece.moveset}" if piece.class == Queen
         moveset = piece.moveset
         return true if target_within_moveset?(king_location, moveset) && valid_move?(piece.location, king_location, player_colour)
       end
@@ -108,14 +108,16 @@ class Board
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
     start_index, target_index = line.index(start), line.index(target)
-    # puts "START #{start_index}"
-    # puts "TARGET #{target_index}"
-    # puts "#{line}"
+    #  puts "START #{start_index}"
+    #  puts "TARGET #{target_index}"
+    #  puts "LINE: #{line}"
     if start_index > target_index
       line = line.reverse
-      start_index, target_index = target_index, start_index
+      start_index, target_index = line.index(start), line.index(target)
     end
-    #puts "#{line}"
+    # puts "START #{start_index}"
+    # puts "TARGET #{target_index}"
+    # puts "LINE: #{line}"
     #puts "LINE: #{line[start_index...target_index]}"
     route = line[start_index+1...target_index]
     # puts "#{line}"
