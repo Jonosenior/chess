@@ -58,6 +58,7 @@ class Board
 
   def checkmate?(king_colour, player_colour)
     return false if can_king_escape?(king_colour, player_colour)
+    #return false if
     true
   end
 
@@ -88,14 +89,16 @@ class Board
 
   #private
 
-  def square_under_attack?(location, player_colour)
-    @contents.each do |row|
-      row.each do |piece|
-
-      end
-    end
-
-  end
+  # def piece_under_attack?(location)
+  #   @contents.each do |row|
+  #     row.each do |piece|
+  #       next if piece.class == String || piece.colour == king_colour
+  #       moveset = piece.moveset
+  #
+  #     end
+  #   end
+  #
+  # end
 
   def other_colour(colour)
     (colour == :white) ? :black : :white

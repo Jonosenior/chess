@@ -75,10 +75,14 @@ describe Board do
           it 'returns true' do
             board.move([7,1],[5,5])
             board.delete_at([1,5])
-            board.visualise
+            #board.visualise
+            piece = board.return_piece_at([5,5])
+            moveset = piece.moveset
+            # puts "within moveset" if board.target_within_moveset?([0,5],moveset)
+            # puts "route blocked" if board.route_blocked?([5,5],[0,5])
+            # puts "intermediary_squares: #{board.intermediary_squares([5,5],[0,5])}"
             expect(board.valid_move?([5,5],[0,5],:white)).to be_truthy
             # puts board.return_piece_at([5,5]).class
-            # puts "#{board.return_piece_at([5,5]).moveset}"
           end
         end
       end
@@ -114,7 +118,6 @@ describe Board do
 
 
 
-
   describe '#check?' do
     context 'opening board' do
       it 'returns false' do
@@ -143,9 +146,9 @@ describe Board do
           board.move([7,4],[5,5])
           #board.delete_at([1,6])
           board.delete_at([1,5])
-          puts board.return_piece_at([5,5]).class
-          puts "#{board.return_piece_at([5,5]).moveset}"
-          board.visualise
+          # puts board.return_piece_at([5,5]).class
+          # puts "#{board.return_piece_at([5,5]).moveset}"
+          # board.visualise
           expect(board.check?([0,5],:black,:white)).to be_truthy
         end
       end
@@ -155,39 +158,41 @@ describe Board do
 
 
 
-  # describe 'checkmate?' do
-  #   context 'king is in check' do
-  #     context 'king can\'t move out of check' do
-  #       it 'returns false' do
-  #         board.move([7,3],[2,7])
-  #         board.delete_at([1,6])
-  #         expect(board.checkmate?(:black,:white)).to be_truthy
-  #       end
-  #     end
-  #
-  #     context 'king can move out of check' do
-  #       it 'returns true' do
-  #         board.move([7,3],[2,7])
-  #         board.delete_at([1,6])
-  #         board.delete_at([1,5])
-  #         #board.visualise
-  #         expect(board.checkmate?(:black,:white)).to be_falsey
-  #       end
-  #
-  #       # context 'but new position is also check' do
-  #       #   it 'returns false' do
-  #       #     board.move([7,3],[2,7])
-  #       #     board.move([7,4],[5,5])
-  #       #     board.delete_at([1,6])
-  #       #     board.delete_at([1,5])
-  #       #     board.visualise
-  #       #     expect(board.checkmate?(:black,:white)).to be_truthy
-  #       #   end
-  #       # end
-  #     end
-  #
-  #   end
-  # end
+  describe 'checkmate?' do
+    context 'king is in check' do
+      context 'king can\'t move out of check' do
+        it 'returns false' do
+          board.move([7,3],[2,7])
+          board.delete_at([1,6])
+          expect(board.checkmate?(:black,:white)).to be_truthy
+        end
+      end
+
+      context 'king can move out of check' do
+        context 'and new square is unattacked' do
+          it 'returns true' do
+            board.move([7,3],[2,7])
+            board.delete_at([1,6])
+            board.delete_at([1,5])
+            #board.visualise
+            expect(board.checkmate?(:black,:white)).to be_falsey
+          end
+        end
+
+        context 'but new position would also be in check' do
+          it 'returns false' do
+            board.move([7,3],[2,7])
+            board.move([7,4],[5,5])
+            board.delete_at([1,6])
+            board.delete_at([1,5])
+            #board.visualise
+            expect(board.checkmate?(:black,:white)).to be_truthy
+          end
+        end
+      end
+
+    end
+  end
 
   describe '#target_within_moveset?' do
     context 'passed 3d array' do
@@ -243,8 +248,21 @@ describe Board do
       end
     end
 
-    context 'passed '
+  end
 
+  describe '#intermediary_squares' do
+    context 'given a rook' do
+      context 'passed a target on the same column' do
+        it 'returns all intermediary squares' do
+          board.move([7,1],[5,5])
+          #board.delete_at([1,5])
+          #board.visualise
+          piece = board.return_piece_at([5,5])
+          #moveset = piece.moveset
+          expect(board.intermediary_squares([5,5], [0,5])).to eq([[4,5], [3,5], [2,5], [1,5]])
+        end
+      end
+    end
   end
 
 
