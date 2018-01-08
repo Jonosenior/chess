@@ -57,21 +57,48 @@ class Board
   end
 
   def checkmate?(king_colour)
+    king_location = locate_piece(King, king_colour)
+    #puts "King location: #{king_location}"
+    attackers = locate_attackers(king_location)
+    #puts attackers.length
+    #puts "Attackers: #{attackers}"
     return false if can_king_escape?(king_colour)
-    #return false if
+    return false if can_attackers_be_captured?(attackers)
+    #puts "Can attackers be captured: #{can_attackers_be_captured?(attackers)}"
     true
+  end
+
+  def can_attackers_be_captured?(attackers)
+    return true if attackers.empty?
+    return false if attackers.length > 1
+    return true if piece_under_attack?(attackers.flatten)
+    false
   end
 
   def can_king_escape?(king_colour)
     attacker_colour = other_colour(king_colour)
     king_location = locate_piece(King, king_colour)
     king = return_piece_at(king_location)
-    #puts king.location
+    #puts "#{king.location}"
     valid_moves = king.moveset.select {|move| valid_move?(king_location, move, king_colour)}
-    #puts "#{valid_moves}"
+    #puts "valid moves: #{valid_moves}"
     out_of_check = valid_moves.select {|move| !piece_under_attack?(move, king_colour)}
-    #puts "#{out_of_check}"
-    !out_of_check.empty?
+    #puts "out of check: #{out_of_check}"
+    out_of_check.length > 0
+  end
+
+  def locate_attackers(location)
+    defender_colour = return_piece_at(location).colour
+    attacker_colour = other_colour(defender_colour)
+    attackers = []
+    @contents.each do |row|
+      row.each do |piece|
+        next if piece.class == String || piece.colour != attacker_colour
+        attackers << piece.location if valid_move?(piece.location, location, attacker_colour)
+      end
+    end
+    #attackers = attackers.flatten if attackers.length == 1
+    attackers
   end
 
   # def check?(king_location, king_colour, player_colour)
@@ -204,14 +231,15 @@ end
 
 
 #
- # board = Board.new
- # board.move([7,3],[2,7])
- # board.delete_at([1,6])
- # board.delete_at([1,5])
- # puts board.piece_under_attack?([2,7])
- # board.visualise
- #
-
+#  board = Board.new
+#  board.move([7,3],[2,7])
+#  board.delete_at([1,6])
+#  board.delete_at([1,5])
+#  # puts board.piece_under_attack?([2,7])
+#   board.visualise
+# puts board.locate_attackers([2,7])
+#  #
+#
 # puts "#{board.locate_piece(King, :white)}"
 #puts "#{board.locate_king(:white)}"
 # puts board.other_colour(:black)

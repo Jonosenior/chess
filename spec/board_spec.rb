@@ -160,17 +160,24 @@ describe Board do
 
   describe 'checkmate?' do
     context 'king is in check' do
+
       context 'king can\'t move out of check' do
-        it 'returns false' do
+        it 'returns true' do
           board.move([7,3],[2,7])
           board.delete_at([1,6])
+          board.delete_at([1,7])
+          board.delete_at([1,8])
+          # attackers = board.locate_attackers([0,5])
+          # puts "Attackers: #{attackers}"
+          # puts "Piece under attack? #{board.piece_under_attack?(attackers.flatten)}"
+          #board.visualise
           expect(board.checkmate?(:black)).to be_truthy
         end
       end
 
       context 'king can move out of check' do
         context 'and new square is unattacked' do
-          it 'returns true' do
+          it 'returns false' do
             board.move([7,3],[2,7])
             board.delete_at([1,6])
             board.delete_at([1,5])
@@ -180,9 +187,10 @@ describe Board do
         end
 
         context 'but new position would also be in check' do
-          it 'returns false' do
+          it 'returns true' do
             board.move([7,3],[2,7])
             board.move([7,4],[5,5])
+            board.delete_at([1,8])
             board.delete_at([1,6])
             board.delete_at([1,5])
             #board.visualise
@@ -190,6 +198,29 @@ describe Board do
           end
         end
       end
+
+      context 'by single attacker' do
+        context 'but attacker can be captured' do
+          it 'returns false' do
+            board.move([7,7],[2,6])
+            #board.move([7,4],[5,5])
+            #board.delete_at([1,6])
+            #board.delete_at([1,5])
+            #board.visualise
+            #puts "#{board.piece_under_attack?([2,6])}"
+
+            expect(board.checkmate?(:black)).to be_falsey
+          end
+        end
+      end
+
+
+
+
+
+
+
+
 
     end
   end
