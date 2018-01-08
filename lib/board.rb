@@ -1,16 +1,19 @@
 require_relative 'pieces'
 
+
+# Board enforces the rules of chess and stores the current status of the game board.
+
 class Board
 
   attr_reader :contents
 
   def initialize
     @contents =
-              [['8',  Rook.new(:black, [0,1]), Knight.new(:black, [0,2]),
-                Bishop.new(:black, [0,3]),	Queen.new(:black, [0,4]), King.new(:black, [0,5]),
-                Bishop.new(:black, [0,6]),	Knight.new(:black, [0,7]), Rook.new(:black, [0,8])],
-              ['7',  Pawn.new(:black, [1,1]), Pawn.new(:black, [1,2]),
-               Pawn.new(:black, [1,3]),	Pawn.new(:black, [1,4]), Pawn.new(:black, [1,5]),
+              [['8',  Rook.new(:black, [0, 1]), Knight.new(:black, [0, 2]),
+                Bishop.new(:black, [0, 3]),	Queen.new(:black, [0, 4]), King.new(:black, [0, 5]),
+                Bishop.new(:black, [0, 6]),	Knight.new(:black, [0, 7]), Rook.new(:black, [0, 8])],
+              ['7',  Pawn.new(:black, [1, 1]), Pawn.new(:black, [1, 2]),
+               Pawn.new(:black,  [1, 3]),	Pawn.new(:black, [1, 4]), Pawn.new(:black, [1,5]),
                Pawn.new(:black, [1,6]),	Pawn.new(:black, [1,7]), Pawn.new(:black, [1,8])],
                ['6',  ' ',' ',' ',' ',' ',' ',' ',' '],
                ['5',  ' ',' ',' ',' ',' ',' ',' ',' '],
@@ -73,6 +76,14 @@ class Board
     true
   end
 
+  # def iterate_contents(&block)
+  #   @contents.each do |row|
+  #     row.each do |piece|
+  #       yield block
+  #     end
+  #   end
+  # end
+
   def can_attack_be_blocked?(attackers, king_colour)
     return false if attackers.length > 1
     route = intermediary_squares(attackers.flatten, king_location) + attackers.location
@@ -82,8 +93,7 @@ class Board
 
   def can_attackers_be_captured?(attackers)
     return false if attackers.length > 1
-    return true if piece_under_attack?(attackers.flatten)
-    false
+    piece_under_attack?(attackers.flatten)
   end
 
   def can_king_escape?(king_colour)
@@ -104,7 +114,7 @@ class Board
     attackers = []
     @contents.each do |row|
       row.each do |piece|
-        next if piece.class == String || piece.colour != attacker_colour
+        next if empty_sq?(piece) || piece.colour != attacker_colour
         attackers << piece.location if valid_move?(piece.location, location, attacker_colour)
       end
     end
@@ -131,7 +141,7 @@ class Board
     #puts king_location
     @contents.each do |row|
       row.each do |piece|
-        next if piece.class == String || piece.colour != attacker_colour
+        next if empty_sq?(piece) || piece.colour != attacker_colour
       #  puts "#{piece.moveset}" if piece.class == Queen
         moveset = piece.moveset
         return true if valid_move?(piece.location, location, attacker_colour)
@@ -228,7 +238,8 @@ class Board
   end
 
   def empty_sq?(sq)
-    return_piece_at(sq).class == String
+    square = (sq.class == Array) ? return_piece_at(sq) : sq
+    square.class == String
   end
 
   def outside_board?(sq)
@@ -239,7 +250,8 @@ end
 
 
 #
-#  board = Board.new
+  # board = Board.new
+  # puts board.contents[0][5].class.superclass
 #  board.move([7,3],[2,7])
 #  board.delete_at([1,6])
 #  board.delete_at([1,5])
