@@ -56,36 +56,55 @@ class Board
     true
   end
 
-  def checkmate?(king_colour, player_colour)
-    return false if can_king_escape?(king_colour, player_colour)
+  def checkmate?(king_colour)
+    return false if can_king_escape?(king_colour)
     #return false if
     true
   end
 
-  def can_king_escape?(king_colour, player_colour)
+  def can_king_escape?(king_colour)
+    attacker_colour = other_colour(king_colour)
     king_location = locate_piece(King, king_colour)
     king = return_piece_at(king_location)
     #puts king.location
     valid_moves = king.moveset.select {|move| valid_move?(king_location, move, king_colour)}
     #puts "#{valid_moves}"
-    out_of_check = valid_moves.select {|move| !check?(move, king_colour, player_colour)}
+    out_of_check = valid_moves.select {|move| !piece_under_attack?(move, king_colour)}
     #puts "#{out_of_check}"
     !out_of_check.empty?
   end
 
-  def check?(king_location, king_colour, player_colour)
+  # def check?(king_location, king_colour, player_colour)
+  #   #king_location = locate_piece(King, king_colour)
+  #   #puts king_location
+  #   @contents.each do |row|
+  #     row.each do |piece|
+  #       next if piece.class == String || piece.colour == king_colour
+  #     #  puts "#{piece.moveset}" if piece.class == Queen
+  #       moveset = piece.moveset
+  #       return true if valid_move?(piece.location, king_location, player_colour)
+  #     end
+  #   end
+  #   false
+  # end
+
+
+  def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
+    #defender_colour = return_piece_at(location).colour
+    attacker_colour = other_colour(defender_colour)
     #king_location = locate_piece(King, king_colour)
     #puts king_location
     @contents.each do |row|
       row.each do |piece|
-        next if piece.class == String || piece.colour == king_colour
+        next if piece.class == String || piece.colour != attacker_colour
       #  puts "#{piece.moveset}" if piece.class == Queen
         moveset = piece.moveset
-        return true if valid_move?(piece.location, king_location, player_colour)
+        return true if valid_move?(piece.location, location, attacker_colour)
       end
     end
     false
   end
+
 
   #private
 
@@ -123,15 +142,6 @@ class Board
     locations = locations.flatten if locations.length == 1
     locations
   end
-
-
-  #   @contents.each_with_index do |row, i|
-  #     @contents.each_with_index do |row, j|
-  #       piece = return_piece_at([i,j])
-  #       return [i,j]
-  #     end
-  #   end
-  # end
 
   def route_blocked?(start, target)
     route = intermediary_squares(start, target)
@@ -194,7 +204,14 @@ end
 
 
 #
-# board = Board.new
+ # board = Board.new
+ # board.move([7,3],[2,7])
+ # board.delete_at([1,6])
+ # board.delete_at([1,5])
+ # puts board.piece_under_attack?([2,7])
+ # board.visualise
+ #
+
 # puts "#{board.locate_piece(King, :white)}"
 #puts "#{board.locate_king(:white)}"
 # puts board.other_colour(:black)
