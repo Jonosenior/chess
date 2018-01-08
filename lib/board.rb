@@ -63,7 +63,7 @@ class Board
   end
 
   def can_king_escape?(king_colour, player_colour)
-    king_location = locate_king(king_colour)
+    king_location = locate_piece(King, king_colour)
     king = return_piece_at(king_location)
     #puts king.location
     valid_moves = king.moveset.select {|move| valid_move?(king_location, move, king_colour)}
@@ -74,7 +74,7 @@ class Board
   end
 
   def check?(king_location, king_colour, player_colour)
-    #king_location = locate_king(king_colour)
+    #king_location = locate_piece(King, king_colour)
     #puts king_location
     @contents.each do |row|
       row.each do |piece|
@@ -103,15 +103,35 @@ class Board
   def other_colour(colour)
     (colour == :white) ? :black : :white
   end
-
-  def locate_king(king_colour)
-    @contents.each_with_index do |row, i|
-      @contents.each_with_index do |row, j|
-        piece = return_piece_at([i,j])
-        return [i,j] if piece.class == King && piece.colour == king_colour
+  #
+  # def locate_king(king_colour)
+  #
+  #   @contents.each do |row|
+  #     row.each do |piece|
+  #       return piece.location if piece.class == King && piece.colour == king_colour
+  #     end
+  #   end
+  # end
+  #
+  def locate_piece(class_to_find, colour)
+    locations = []
+    @contents.each do |row|
+      row.each do |piece|
+        locations << piece.location if piece.class == class_to_find && piece.colour == colour
       end
     end
+    locations = locations.flatten if locations.length == 1
+    locations
   end
+
+
+  #   @contents.each_with_index do |row, i|
+  #     @contents.each_with_index do |row, j|
+  #       piece = return_piece_at([i,j])
+  #       return [i,j]
+  #     end
+  #   end
+  # end
 
   def route_blocked?(start, target)
     route = intermediary_squares(start, target)
@@ -172,7 +192,11 @@ class Board
 
 end
 
+
+#
 # board = Board.new
+# puts "#{board.locate_piece(King, :white)}"
+#puts "#{board.locate_king(:white)}"
 # puts board.other_colour(:black)
 # board.check?
 #board.contents.each { |a| a.each { |b| puts b.class}}
