@@ -200,28 +200,30 @@ describe Board do
       end
 
       context 'by single attacker' do
-        context 'but attacker can be captured' do
-          it 'returns false' do
-            board.move([7,7],[2,6])
-            #board.move([7,4],[5,5])
-            #board.delete_at([1,6])
-            #board.delete_at([1,5])
-            #board.visualise
-            #puts "#{board.piece_under_attack?([2,6])}"
+        context 'and king can\'t move out of check'
+          context 'but attacker can be captured' do
+            it 'returns false' do
+              board.move([7,7],[2,6])
+              #board.move([7,4],[5,5])
+              #board.delete_at([1,6])
+              #board.delete_at([1,5])
+              #board.visualise
+              #puts "#{board.piece_under_attack?([2,6])}"
 
-            expect(board.checkmate?(:black)).to be_falsey
+              expect(board.checkmate?(:black)).to be_falsey
+            end
+          end
+          context 'and attacker can\'t be captured' do
+            it 'returns true' do
+              board.move([7,4],[2,7])
+              board.delete_at([1,8])
+              board.delete_at([1,6])
+              board.delete_at([1,7])
+              #board.visualise
+              expect(board.checkmate?(:black)).to be_truthy
+            end
           end
         end
-      end
-
-
-
-
-
-
-
-
-
     end
   end
 

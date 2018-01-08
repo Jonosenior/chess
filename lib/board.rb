@@ -63,13 +63,24 @@ class Board
     #puts attackers.length
     #puts "Attackers: #{attackers}"
     return false if can_king_escape?(king_colour)
-    return false if can_attackers_be_captured?(attackers)
+    if attackers.length == 1
+      return false if can_attackers_be_captured?(attackers)
+      if attackers.flatten.class == Rook || attackers.flatten.class == Bishop || attackers.flatten.class == Queen
+        return false if can_attack_be_blocked?(attackers, king_colour)
+      end
+    end
     #puts "Can attackers be captured: #{can_attackers_be_captured?(attackers)}"
     true
   end
 
+  def can_attack_be_blocked?(attackers, king_colour)
+    return false if attackers.length > 1
+    route = intermediary_squares(attackers.flatten, king_location) + attackers.location
+    route.each { |square| return true if piece_under_attack?(square, king_colour) }
+    false
+  end
+
   def can_attackers_be_captured?(attackers)
-    return true if attackers.empty?
     return false if attackers.length > 1
     return true if piece_under_attack?(attackers.flatten)
     false
@@ -97,7 +108,6 @@ class Board
         attackers << piece.location if valid_move?(piece.location, location, attacker_colour)
       end
     end
-    #attackers = attackers.flatten if attackers.length == 1
     attackers
   end
 
@@ -117,9 +127,7 @@ class Board
 
 
   def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
-    #defender_colour = return_piece_at(location).colour
     attacker_colour = other_colour(defender_colour)
-    #king_location = locate_piece(King, king_colour)
     #puts king_location
     @contents.each do |row|
       row.each do |piece|
