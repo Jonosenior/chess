@@ -118,38 +118,38 @@ describe Board do
 
 
 
-  describe '#check?' do
+  describe '#piece_under_attack?' do
     context 'opening board' do
       it 'returns false' do
-        expect(board.check?([0,5],:black,:white)).to be_falsey
+        black_king = board.locate_piece(King, :black)
+        expect(board.piece_under_attack?(black_king)).to be_falsey
       end
     end
 
     context 'white king in check' do
       it 'returns true' do
+        white_king = board.locate_piece(King, :white)
         board.move([0,1],[6,5])
-        expect(board.check?([7,5],:white,:black)).to be_truthy
+        expect(board.piece_under_attack?([7,5])).to be_truthy
       end
     end
 
     context 'black king in check' do
       context 'attacked by white bishop' do
         it 'returns true' do
+          black_king = board.locate_piece(King, :black)
           board.move([7,3],[2,7])
           board.delete_at([1,6])
-          expect(board.check?([0,5],:black,:white)).to be_truthy
+          expect(board.piece_under_attack?(black_king)).to be_truthy
         end
       end
+
       context 'attacked by white queen' do
         it 'returns true' do
-          #board.move([7,3],[2,7])
+          black_king = board.locate_piece(King, :black)
           board.move([7,4],[5,5])
-          #board.delete_at([1,6])
           board.delete_at([1,5])
-          # puts board.return_piece_at([5,5]).class
-          # puts "#{board.return_piece_at([5,5]).moveset}"
-          # board.visualise
-          expect(board.check?([0,5],:black,:white)).to be_truthy
+          expect(board.piece_under_attack?(black_king)).to be_truthy
         end
       end
     end
@@ -164,7 +164,7 @@ describe Board do
         it 'returns false' do
           board.move([7,3],[2,7])
           board.delete_at([1,6])
-          expect(board.checkmate?(:black,:white)).to be_truthy
+          expect(board.checkmate?(:black)).to be_truthy
         end
       end
 
@@ -175,7 +175,7 @@ describe Board do
             board.delete_at([1,6])
             board.delete_at([1,5])
             #board.visualise
-            expect(board.checkmate?(:black,:white)).to be_falsey
+            expect(board.checkmate?(:black)).to be_falsey
           end
         end
 
@@ -186,7 +186,7 @@ describe Board do
             board.delete_at([1,6])
             board.delete_at([1,5])
             #board.visualise
-            expect(board.checkmate?(:black,:white)).to be_truthy
+            expect(board.checkmate?(:black)).to be_truthy
           end
         end
       end
