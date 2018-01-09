@@ -3,15 +3,40 @@ require File.expand_path("../../lib/pieces", __FILE__)
 describe Pawn do
 
   describe "#moveset" do
-    it "returns only the square directly in front of it" do
-      pawn = Pawn.new(:white, [6,1])
-      expect(pawn.moveset).to eq([5,1])
-    end
+    context 'white pawn' do
+      context 'on its first move' do
+        subject(:pawn) {Pawn.new(:white, [6,2], true)}
+          context 'with an empty square in front' do
+            it 'can move two squares forward' do
+              expect(pawn.moveset(:empty)).to include([4,2])
+            end
+            it 'can move one square forward' do
+              expect(pawn.moveset(:empty)).to include([4,2])
+            end
+            it 'only has two possible moves' do
+              expect(pawn.moveset(:empty).length).to eq(2)
+            end
+          end  #empty square in front
 
-    it 'knows that black pawns go down the board' do
-      pawn = Pawn.new(:black, [1,4])
-      expect(pawn.moveset).to eq([2,4])
-    end
+          context 'with an enemy piece diagonally in front' do
+            it 'can move diagonally left' do
+              expect(pawn.moveset(:enemy)).to include([5,1])
+            end
+            it 'can move diagonally right' do
+              expect(pawn.moveset(:enemy)).to include([5,3])
+            end
+          end
+      end #/on its first move
+    end #/white pawn
+    # it "returns only the square directly in front of it" do
+    #   pawn = Pawn.new(:white, [6,1])
+    #   expect(pawn.moveset).to eq([5,1])
+    # end
+    #
+    # it 'knows that black pawns go down the board' do
+    #   pawn = Pawn.new(:black, [1,4])
+    #   expect(pawn.moveset).to eq([2,4])
+    # end
   end
 
 end
@@ -143,7 +168,7 @@ end
 describe Queen do
 
     describe '#moveset' do
-      
+
       context 'located in a corner' do
         subject(:queen) { Queen.new(:black, [0,1]) }
 
