@@ -12,19 +12,54 @@ class Piece
 
 end
 
-class Pawn < Piece
-  attr_reader :icon
+# class Pawn < Piece
+#   attr_reader :icon
+#
+#   def initialize(colour, location)
+#     super
+#     @colour == :white ? @icon = "\u265F" : @icon = "\u2659"
+#   end
+#
+#   def moveset
+#     @colour == :white ? [@location[0]-1, @location[1]] : [@location[0]+1, @location[1]]
+#   end
+#
+# end
 
-  def initialize(colour, location)
-    super
+class Pawn < Piece
+  attr_reader :icon, :first_move
+
+  def initialize(colour, location, first_move = false)
+    super(colour, location)
     @colour == :white ? @icon = "\u265F" : @icon = "\u2659"
+    @first_move = first_move
   end
 
-  def moveset
-    @colour == :white ? [@location[0]-1, @location[1]] : [@location[0]+1, @location[1]]
+  def moveset(target_type)
+    x = @location[0]
+    y = @location[1]
+
+    return moveset_black(target_type,x,y) if @colour == :black
+
+    if target_type == :piece
+      moveset = [[x-1, y+1], [x-1, y-1]]
+    elsif target_type == :empty
+      @first_move ? [[x-1, y],[x-2,y]] : [x-1,y]
+    end
+    moveset.delete_if { |a| board_limits(a[0],a[1]) }
+  end
+
+  def moveset_black(target_type,x,y)
+    if target_type == :piece
+      moveset = [[x+1, y+1], [x+1, y-1]]
+    elsif target_type == :empty
+      @first_move ? [[x-1, y],[x-2,y]] : [x-1,y]
+    end
+    moveset.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
 end
+
 
 class Knight < Piece
   attr_reader :icon
