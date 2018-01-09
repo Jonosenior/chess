@@ -11,16 +11,16 @@ class Board
               [['8',  Rook.new(:black, [0, 1]), Knight.new(:black, [0, 2]),
                 Bishop.new(:black, [0, 3]),	Queen.new(:black, [0, 4]), King.new(:black, [0, 5]),
                 Bishop.new(:black, [0, 6]),	Knight.new(:black, [0, 7]), Rook.new(:black, [0, 8])],
-              ['7',  Pawn.new(:black, [1, 1]), Pawn.new(:black, [1, 2]),
-               Pawn.new(:black,  [1, 3]),	Pawn.new(:black, [1, 4]), Pawn.new(:black, [1,5]),
-               Pawn.new(:black, [1,6]),	Pawn.new(:black, [1,7]), Pawn.new(:black, [1,8])],
+              ['7',  Pawn.new(:black, [1, 1], true), Pawn.new(:black, [1, 2], true),
+               Pawn.new(:black,  [1, 3], true),	Pawn.new(:black, [1, 4], true), Pawn.new(:black, [1,5], true),
+               Pawn.new(:black, [1,6], true),	Pawn.new(:black, [1,7], true), Pawn.new(:black, [1,8], true)],
                ['6',  ' ',' ',' ',' ',' ',' ',' ',' '],
                ['5',  ' ',' ',' ',' ',' ',' ',' ',' '],
                ['4',  ' ',' ',' ',' ',' ',' ',' ',' '],
                ['3',  ' ',' ',' ',' ',' ',' ',' ',' '],
-               ['2',  Pawn.new(:white, [6 ,1]), Pawn.new(:white, [6,2]),
-               Pawn.new(:white, [6,3]), Pawn.new(:white, [6,4]), Pawn.new(:white, [6,5]),
-               Pawn.new(:white, [6,6]), Pawn.new(:white, [6,7]), Pawn.new(:white, [6,8])],
+               ['2',  Pawn.new(:white, [6 ,1], true), Pawn.new(:white, [6,2], true),
+               Pawn.new(:white, [6,3], true), Pawn.new(:white, [6,4], true), Pawn.new(:white, [6,5], true),
+               Pawn.new(:white, [6,6], true), Pawn.new(:white, [6,7], true), Pawn.new(:white, [6,8], true)],
                 ['1',  Rook.new(:white, [7,1]), Knight.new(:white, [7,2]),
                 Bishop.new(:white, [7,3]), Queen.new(:white, [7,4]), King.new(:white, [7,5]),
                 Bishop.new(:white, [7,6]), Knight.new(:white, [7,7]), Rook.new(:white, [7,8])]]
@@ -50,7 +50,7 @@ class Board
     return false if start == target
     piece = return_piece_at(start)
     return false if player_colour != piece.colour
-    return false if !target_within_moveset?(target, piece.moveset)
+    return false if !target_within_moveset?(target, piece.moveset) unless piece.class == Pawn
     return false if friendly_fire?(piece, target)
     if piece.class == Rook || piece.class == Bishop || piece.class == Queen
       return false if route_blocked?(start, target)
@@ -94,7 +94,7 @@ class Board
     #return false if attackers.length > 1
     king_location = locate_piece(King, king_colour)
     route = intermediary_squares(attacker.location, king_location) << attacker.location
-    puts "#{route}"
+    #puts "#{route}"
     route.each do |square|
       if piece_under_attack?(square, king_colour) #&& locate_attackers(square)
          blocker_locations = locate_attackers(square, other_colour(king_colour))
@@ -163,7 +163,7 @@ class Board
       row.each do |piece|
         next if empty_sq?(piece) || piece.colour != attacker_colour
       #  puts "#{piece.moveset}" if piece.class == Queen
-        moveset = piece.moveset
+      #  moveset = piece.moveset
         return true if valid_move?(piece.location, location, attacker_colour)
       end
     end
