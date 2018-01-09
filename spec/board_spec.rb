@@ -214,16 +214,59 @@ describe Board do
             end
           end
           context 'and attacker can\'t be captured' do
-            it 'returns true' do
-              board.move([7,4],[2,7])
-              board.delete_at([1,8])
-              board.delete_at([1,6])
-              board.delete_at([1,7])
+            context 'and attack can\'t be blocked' do
+              it 'returns true' do
+                board.move([7,4],[2,7])
+                board.delete_at([1,8])
+                board.delete_at([1,6])
+                board.delete_at([1,7])
+                #board.visualise
+                expect(board.checkmate?(:black)).to be_truthy
+              end
+            end
+            context 'but attack can be blocked' do
+              it 'returns false' do
+                board.move([7,4],[2,7])
+                board.move([0,8],[0,6])
+                board.delete_at([1,8])
+                board.delete_at([1,6])
+                board.delete_at([1,7])
+                #board.visualise
+                expect(board.checkmate?(:black)).to be_falsey
+              end
+            end
+          end
+
+
+        context 'knight threatens king' do
+          context 'king can\'t move to escape' do
+            context 'knight can\'t be captured' do
+              it 'returns true' do
+                board.move([0,2],[6,7])
+                board.move([7,8],[7,6])
+                #board.visualise
+                expect(board.checkmate?(:white)).to be_truthy
+              end
+            end
+            context 'knight can be captured' do
+              it 'returns false' do
+                board.move([0,2],[6,7])
+                #board.visualise
+                expect(board.checkmate?(:white)).to be_falsey
+              end
+            end #/captured
+          end #/can't move to escape
+          context 'king can move to escape' do
+            it 'returns false' do
+              board.move([0,2],[6,7])
+              board.move([7,8],[7,6])
+              board.delete_at([7,4])
               #board.visualise
-              expect(board.checkmate?(:black)).to be_truthy
+              expect(board.checkmate?(:white)).to be_falsey
             end
           end
         end
+      end
     end
   end
 
