@@ -42,6 +42,7 @@ class Board
     piece = return_piece_at(start)
     create_new_piece_at(piece, target)
     delete_at(start)
+    #puts "#{piece.first_move}"
   end
 
   def valid_move?(start, target, player_colour)
@@ -55,7 +56,18 @@ class Board
     if piece.class == Rook || piece.class == Bishop || piece.class == Queen
       return false if route_blocked?(start, target)
     end
+    if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
     true
+  end
+
+  def valid_pawn_move?(piece, target)
+    target_type = target_type(target)
+    moveset = piece.moveset(target_type)
+    target_within_moveset?(target, moveset)
+  end
+
+  def target_type(location)
+    empty_sq?(location) ? :empty : :enemy
   end
 
   def checkmate?(king_colour)

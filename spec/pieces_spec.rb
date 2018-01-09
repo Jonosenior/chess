@@ -27,6 +27,12 @@ describe Pawn do
             end
           end
       end #/on its first move
+      context 'in the middle of the board' do
+        subject(:pawn) {Pawn.new(:white, [3,4], true)}
+        it 'cannot move backwards' do
+          expect(pawn.moveset(:empty)).not_to include([4,4])
+        end
+      end
     end #/white pawn
     # it "returns only the square directly in front of it" do
     #   pawn = Pawn.new(:white, [6,1])

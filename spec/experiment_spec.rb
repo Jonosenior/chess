@@ -2,20 +2,14 @@ require File.expand_path("../../lib/board", __FILE__)
 
 describe Board do
   subject(:board) { Board.new }
-
-
-    describe '#intermediary_squares' do
-      context 'given a rook' do
-        context 'passed a target on the same column' do
-          it 'returns all intermediary squares' do
-            board.move([7,1],[5,5])
-            board.delete_at([1,5])
-            board.visualise
-            piece = board.return_piece_at([5,5])
-            #moveset = piece.moveset
-            expect(board.intermediary_squares([5,5], [0,5])).to eq([[4,5], [3,5], [2,5], [1,5]])
-          end
+    context 'with enemy directly in front' do
+      context 'tries to move two squares forward' do
+        it 'returns false' do
+          board.move([1,1],[5,8])
+          board.visualise
+          expect(board.valid_move?([6,8], [4,8], :white)).to be_falsey
         end
       end
     end
+
 end

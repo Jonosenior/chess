@@ -32,24 +32,6 @@ describe Board do
         end
       end
 
-      context "if asked to move white pawn forward one square" do
-        it 'returns true' do
-          expect(board.valid_move?([6,1], [5,1], :white)).to be_truthy
-        end
-      end
-
-      context 'if asked to move black pawn forward one square' do
-        it 'returns true' do
-          expect(board.valid_move?([1,1], [2,1], :black)).to be_truthy
-        end
-      end
-
-      context 'if asked to move pawn three steps forward' do
-        it 'returns false' do
-          expect(board.valid_move?([1,1],[4,1], :black)).to be_falsey
-        end
-      end
-
       context 'if white tries to move a black piece' do
         it 'returns false' do
           expect(board.valid_move?([1,1],[2,1],:white)).to be_falsey
@@ -86,6 +68,77 @@ describe Board do
           end
         end
       end
+
+      context 'the pawn' do
+        context 'white pawn' do
+          context 'on opening board' do
+            context 'tries to move 2 squares forward' do
+              it 'returns true' do
+                expect(board.valid_move?([6,3],[4,3],:white)).to be_truthy
+              end
+            end
+            context 'tries to move 1 square forward' do
+              it 'returns true' do
+                expect(board.valid_move?([6,3],[5,3],:white)).to be_truthy
+              end
+            end
+            context 'tries to move 3 squares' do
+              it 'returns false' do
+                expect(board.valid_move?([6,3],[3,3],:white)).to be_falsey
+              end
+            end
+            context 'tries to move diagonally right' do
+              it 'returns false' do
+                expect(board.valid_move?([6,3],[5,4],:white)).to be_falsey
+              end
+            end
+            context 'tries to move diagonally left' do
+              it 'returns false' do
+                expect(board.valid_move?([6,3],[5,2],:white)).to be_falsey
+              end
+            end
+          end #opening board
+          context 'with enemy directly in front' do
+            context 'tries to move two squares forward' do
+              it 'returns false' do
+                board.move([1,1],[5,8])
+                expect(board.valid_move?([6,8],[4,8],:white)).to be_falsey
+              end
+            end
+            context 'tries to move one square forward' do
+              it 'returns false' do
+                board.move([1,1],[5,8])
+                expect(board.valid_move?([6,8],[5,8],:white)).to be_falsey
+              end
+            end
+            context 'tries to move diagonally to empty square' do
+              it 'returns false' do
+                board.move([1,1],[5,8])
+                expect(board.valid_move?([6,8],[5,7],:white)).to be_falsey
+              end
+            end
+          end
+        end #white
+      end
+
+      # context "if asked to move white pawn forward one square" do
+      #   it 'returns true' do
+      #     expect(board.valid_move?([6,1], [5,1], :white)).to be_truthy
+      #   end
+      # end
+      #
+      # context 'if asked to move black pawn forward one square' do
+      #   it 'returns true' do
+      #     expect(board.valid_move?([1,1], [2,1], :black)).to be_truthy
+      #   end
+      # end
+      #
+      # context 'if asked to move pawn three steps forward' do
+      #   it 'returns false' do
+      #     expect(board.valid_move?([1,1],[4,1], :black)).to be_falsey
+      #   end
+      # end
+
 
 
     end
