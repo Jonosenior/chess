@@ -2,7 +2,6 @@ require_relative 'pieces'
 
 
 # Board enforces the rules of chess and stores the current status of the game board.
-
 class Board
 
   attr_reader :contents
@@ -62,14 +61,19 @@ class Board
   def checkmate?(king_colour)
     king_location = locate_piece(King, king_colour)
     #puts "King location: #{king_location}"
-    attackers = locate_attackers(king_location)
+    attacker_locations = locate_attackers(king_location)
     #puts attackers.length
     #puts "Attackers: #{attackers}"
     return false if can_king_escape?(king_colour)
-    if attackers.length == 1
-      return false if can_attackers_be_captured?(attackers)
-      if attackers.flatten.class == Rook || attackers.flatten.class == Bishop || attackers.flatten.class == Queen
-        return false if can_attack_be_blocked?(attackers, king_colour)
+    # puts attackers.length
+    # puts attackers.flatten.class
+    if attacker_locations.length == 1
+      attacker = return_piece_at(attacker_locations.flatten)
+      #puts attacker
+      return false if can_attackers_be_captured?(attacker_locations)
+      if attacker.class == Rook || attacker.class == Bishop || attacker.class == Queen
+        #puts "Attacker: #{attacker}"
+        return false if can_attack_be_blocked?(attacker, king_colour)
       end
     end
     #puts "Can attackers be captured: #{can_attackers_be_captured?(attackers)}"
@@ -84,11 +88,28 @@ class Board
   #   end
   # end
 
-  def can_attack_be_blocked?(attackers, king_colour)
-    return false if attackers.length > 1
-    route = intermediary_squares(attackers.flatten, king_location) + attackers.location
-    route.each { |square| return true if piece_under_attack?(square, king_colour) }
+
+# Careful that the method can deal w multiple attackers
+  def can_attack_be_blocked?(attacker, king_colour)
+    #return false if attackers.length > 1
+    king_location = locate_piece(King, king_colour)
+    route = intermediary_squares(attacker.location, king_location) << attacker.location
+    puts "#{route}"
+    route.each do |square|
+      if piece_under_attack?(square, king_colour) #&& locate_attackers(square)
+         blocker_locations = locate_attackers(square, other_colour(king_colour))
+         blocker_locations = remove_king(blocker_locations)
+         return true if !blocker_locations.empty?
+        #  #return false if blocker_locations.length > 1
+        #  blocker = return_piece_at(blocker_locations.flatten)
+        #  return true if blocker.class != King
+       end
+    end
     false
+  end
+
+  def remove_king(locations)
+    locations.reject { |sq| return_piece_at(sq).class == King }
   end
 
   def can_attackers_be_captured?(attackers)
@@ -108,8 +129,7 @@ class Board
     out_of_check.length > 0
   end
 
-  def locate_attackers(location)
-    defender_colour = return_piece_at(location).colour
+  def locate_attackers(location, defender_colour = return_piece_at(location).colour)
     attacker_colour = other_colour(defender_colour)
     attackers = []
     @contents.each do |row|
@@ -248,9 +268,32 @@ class Board
 
 end
 
-
 #
-  # board = Board.new
+# board = Board.new
+# board.move([7,3],[2,7])
+# #board.move([0,1],[5,6])
+# board.delete_at([1,6])
+# board.delete_at([1,7])
+# board.delete_at([1,8])
+# board.visualise
+# # locations = [[1, 6], [0,5]]
+# # locations = board.remove_king(locations)
+# # puts locations.empty?
+#
+#
+#
+#
+#
+# puts "Defenders: #{board.locate_attackers([1,6], :white)}"
+# attacker = board.return_piece_at([2,7])
+# king = board.locate_piece(King, :black)
+# puts king
+# puts attacker.location
+# puts "#{board.can_attack_be_blocked?(attacker, :black)}"
+#
+#
+
+
   # puts board.contents[0][5].class.superclass
 #  board.move([7,3],[2,7])
 #  board.delete_at([1,6])
