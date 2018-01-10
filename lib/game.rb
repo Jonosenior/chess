@@ -15,7 +15,6 @@ class Game
 
   def new_turn
     loop do
-      puts "TURN: #{@current_player.name}"
       moves = @current_player.elicit_move
       start = moves[0]
       target = moves[1]
@@ -26,7 +25,20 @@ class Game
       end
       @board.move(start, target)
       @board.visualise
+      review_turn
       complete_turn
+    end
+  end
+
+  def review_turn
+    king_location = @board.locate_piece(King, @current_player.colour)
+    if @board.piece_under_attack?(king_location)
+      if @board.checkmate?(@current_player.colour)
+        puts "Game over"
+        exit
+      else
+        puts "Check!"
+      end
     end
   end
 
@@ -54,8 +66,7 @@ end
 
 game = Game.new
 game.start
-5.times { game.new_turn }
-
+game.new_turn
 #            "A"  "B"     "C"    "D"    "E"     "F"   "G"     "H"
 # [  8  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
 #

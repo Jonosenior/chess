@@ -60,30 +60,18 @@ class Board
     true
   end
 
-  def valid_pawn_move?(piece, target)
-    target_type = target_type(target)
-    moveset = piece.moveset(target_type)
-    return false if double_pawn_move?(piece, target, target_type) && transition_square_blocked?(piece)
-    target_within_moveset?(target, moveset)
-  end
-
-  def double_pawn_move?(piece, target, target_type)
-    x_start, y_start = piece.location[0], piece.location[1]
-    x_target, y_target = target[0], target[1]
-    x_start == x_target + 2 || x_start == x_target - 2 && y_start == y_target
-  end
-
-  def transition_square_blocked?(piece)
-    x,y = piece.location[0], piece.location[1]
-    if piece.colour == :white
-      !empty_sq?([x-1,y])
-    else
-      !empty_sq?([x+1,y])
+  def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
+    attacker_colour = other_colour(defender_colour)
+    #puts king_location
+    @contents.each do |row|
+      row.each do |piece|
+        next if empty_sq?(piece) || piece.colour != attacker_colour
+      #  puts "#{piece.moveset}" if piece.class == Queen
+      #  moveset = piece.moveset
+        return true if valid_move?(piece.location, location, attacker_colour)
+      end
     end
-  end
-
-  def target_type(location)
-    empty_sq?(location) ? :empty : :enemy
+    false
   end
 
   def checkmate?(king_colour)
@@ -108,13 +96,7 @@ class Board
     true
   end
 
-  # def iterate_contents(&block)
-  #   @contents.each do |row|
-  #     row.each do |piece|
-  #       yield block
-  #     end
-  #   end
-  # end
+  #PRIVATE
 
 
 # Careful that the method can deal w multiple attackers
@@ -184,47 +166,36 @@ class Board
   # end
 
 
-  def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
-    attacker_colour = other_colour(defender_colour)
-    #puts king_location
-    @contents.each do |row|
-      row.each do |piece|
-        next if empty_sq?(piece) || piece.colour != attacker_colour
-      #  puts "#{piece.moveset}" if piece.class == Queen
-      #  moveset = piece.moveset
-        return true if valid_move?(piece.location, location, attacker_colour)
-      end
-    end
-    false
+  def valid_pawn_move?(piece, target)
+    target_type = target_type(target)
+    moveset = piece.moveset(target_type)
+    return false if double_pawn_move?(piece, target) && transition_square_blocked?(piece)
+    target_within_moveset?(target, moveset)
   end
 
+  def double_pawn_move?(piece, target)
+    x_start, y_start = piece.location[0], piece.location[1]
+    x_target, y_target = target[0], target[1]
+    x_start == x_target + 2 || x_start == x_target - 2 && y_start == y_target
+  end
 
-  #private
+  def transition_square_blocked?(piece)
+    x,y = piece.location[0], piece.location[1]
+    if piece.colour == :white
+      !empty_sq?([x-1,y])
+    else
+      !empty_sq?([x+1,y])
+    end
+  end
 
-  # def piece_under_attack?(location)
-  #   @contents.each do |row|
-  #     row.each do |piece|
-  #       next if piece.class == String || piece.colour == king_colour
-  #       moveset = piece.moveset
-  #
-  #     end
-  #   end
-  #
-  # end
+  def target_type(location)
+    empty_sq?(location) ? :empty : :enemy
+  end
 
   def other_colour(colour)
     (colour == :white) ? :black : :white
   end
-  #
-  # def locate_king(king_colour)
-  #
-  #   @contents.each do |row|
-  #     row.each do |piece|
-  #       return piece.location if piece.class == King && piece.colour == king_colour
-  #     end
-  #   end
-  # end
-  #
+
   def locate_piece(class_to_find, colour)
     locations = []
     @contents.each do |row|
@@ -243,7 +214,6 @@ class Board
   end
 
   def intermediary_squares(start, target)
-    #moveset = [[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]]]
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
     start_index, target_index = line.index(start), line.index(target)
@@ -299,98 +269,6 @@ end
 #
 #   board = Board.new
 #   pawn = board.return_piece_at([1,1])
-#
-#  # print pawn.location
-#  board.move([6,1],[2,1])
-#   puts board.double_pawn_move?(pawn, [2,1])
-#   puts board.transition_square_blocked?(pawn)
-# # board.move([7,3],[2,7])
-# #board.move([0,1],[5,6])
-# board.delete_at([1,6])
-# board.delete_at([1,7])
-# board.delete_at([1,8])
-# board.visualise
-# # locations = [[1, 6], [0,5]]
-# # locations = board.remove_king(locations)
-# # puts locations.empty?
-#
-#
-#
-#
-#
-# puts "Defenders: #{board.locate_attackers([1,6], :white)}"
-# attacker = board.return_piece_at([2,7])
-# king = board.locate_piece(King, :black)
-# puts king
-# puts attacker.location
-# puts "#{board.can_attack_be_blocked?(attacker, :black)}"
-#
-#
-
-
-  # puts board.contents[0][5].class.superclass
-#  board.move([7,3],[2,7])
-#  board.delete_at([1,6])
-#  board.delete_at([1,5])
-#  # puts board.piece_under_attack?([2,7])
-#   board.visualise
-# puts board.locate_attackers([2,7])
-#  #
-#
-# puts "#{board.locate_piece(King, :white)}"
-#puts "#{board.locate_king(:white)}"
-# puts board.other_colour(:black)
-# board.check?
-#board.contents.each { |a| a.each { |b| puts b.class}}
-#board.check?([0,4],:black,:white)
-#board.contents.each { |a| a.each {|b| puts b.class}}
- # king_location = board.locate_king(:white)
- # puts board.check?(king_location, :black)
-# board.contents.each do |piece|
-#   puts piece.location# if piece.class == King && piece.colour == player_colour
-# end
-
-# puts "#{board.return_piece_at([0,2]).moveset}"
-
-# start = [0,2]
-# target = [2,3]
-# piece = board.return_piece_at(start)
-# puts "#{piece.moveset}"
-
-# puts "#{piece.moveset.flatten(2)}"
-# puts "#{board.valid_move?(start, target, :black)}"
-#puts "#{board.}"
- # puts "#{board.return_piece_at([0,2]).moveset}"
-# pawn = Pawn.new(:white, [6,1])
-# puts "PAWN"
-# start = [6,1]
-# target = [5,1]
-# puts board.target_within_moveset?([6,1],[5,1], pawn)
-# puts board.valid_move?([6,1],[5,1], :white)
-# puts false if board.outside_board?(start) || board.outside_board?(target)
-# puts false if board.empty_sq?(start)
-# puts false if start == target
-# piece = board.return_piece_at(start)
-# return false if player_colour != piece.colour
-# return false if !target_within_moveset?(start, target, piece)
-# return false if friendly_fire?(piece, target)
-# return false if route_blocked?(start, target)
-#
-
-
-
-#  rook = Rook.new(:black, [2,1])
-#  puts "#{rook.moveset}"
-# # board.visualise
-# board.delete_at([6,1])
-# board.visualise
-# #puts board.target_within_moveset?([2,1],[2,8], rook)
-# puts board.valid_move?([7,1], [0,1], :white)
-# puts board.route_blocked?([7,1], [0,1])
-
-
-#[[[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]]]
-
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
 #
