@@ -6,13 +6,13 @@ describe Player do
 
   before do
     allow_any_instance_of(IO).to receive(:puts)
+    allow(player).to receive(:gets).and_return("Jonathan")
   end
 
-  describe '#name' do
+  describe '#elicit_name' do
     context 'given a user-entered name' do
       it 'returns the name' do
-        allow(player).to receive(:gets).and_return("Jonathan")
-        expect(player.name).to eq("Jonathan")
+        expect(player.elicit_name(2)).to eq("Jonathan")
       end
     end
   end
@@ -21,6 +21,10 @@ describe Player do
     it 'returns the assigned colour' do
       expect(player.colour).to eq(:black)
     end
+  end
+
+  describe '#elicit_move' do
+    it 'return'
   end
 
 end
