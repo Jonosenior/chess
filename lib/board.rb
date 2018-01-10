@@ -63,7 +63,23 @@ class Board
   def valid_pawn_move?(piece, target)
     target_type = target_type(target)
     moveset = piece.moveset(target_type)
+    return false if double_pawn_move?(piece, target, target_type) && transition_square_blocked?(piece)
     target_within_moveset?(target, moveset)
+  end
+
+  def double_pawn_move?(piece, target, target_type)
+    x_start, y_start = piece.location[0], piece.location[1]
+    x_target, y_target = target[0], target[1]
+    x_start == x_target + 2 || x_start == x_target - 2 && y_start == y_target
+  end
+
+  def transition_square_blocked?(piece)
+    x,y = piece.location[0], piece.location[1]
+    if piece.colour == :white
+      !empty_sq?([x-1,y])
+    else
+      !empty_sq?([x+1,y])
+    end
   end
 
   def target_type(location)
@@ -281,8 +297,14 @@ class Board
 end
 
 #
-# board = Board.new
-# board.move([7,3],[2,7])
+#   board = Board.new
+#   pawn = board.return_piece_at([1,1])
+#
+#  # print pawn.location
+#  board.move([6,1],[2,1])
+#   puts board.double_pawn_move?(pawn, [2,1])
+#   puts board.transition_square_blocked?(pawn)
+# # board.move([7,3],[2,7])
 # #board.move([0,1],[5,6])
 # board.delete_at([1,6])
 # board.delete_at([1,7])
