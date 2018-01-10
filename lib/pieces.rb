@@ -12,20 +12,6 @@ class Piece
 
 end
 
-# class Pawn < Piece
-#   attr_reader :icon
-#
-#   def initialize(colour, location)
-#     super
-#     @colour == :white ? @icon = "\u265F" : @icon = "\u2659"
-#   end
-#
-#   def moveset
-#     @colour == :white ? [@location[0]-1, @location[1]] : [@location[0]+1, @location[1]]
-#   end
-#
-# end
-
 class Pawn < Piece
   attr_reader :icon, :first_move
 
@@ -36,12 +22,15 @@ class Pawn < Piece
   end
 
   def moveset(target_type)
-    #puts "TARGET TYPE: #{target_type}"
+    # puts "TARGET TYPE: #{target_type}"
     x = @location[0]
     y = @location[1]
 
-    return moveset_black(target_type,x,y) if @colour == :black
+    @colour == :white ? moveset_white(target_type,x,y) : moveset_black(target_type,x,y)
 
+  end
+
+  def moveset_white(target_type,x,y)
     if target_type == :enemy
       moveset = [[x-1, y+1], [x-1, y-1]]
     elsif target_type == :empty
