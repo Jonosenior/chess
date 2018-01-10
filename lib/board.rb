@@ -57,6 +57,7 @@ class Board
       return false if route_blocked?(start, target)
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
+    return false if own_king_in_check?(start, piece, target)
     true
   end
 
@@ -72,6 +73,23 @@ class Board
       end
     end
     false
+  end
+
+
+  def own_king_in_check?(start, piece, target)
+    target_piece = return_piece_at(target)
+    king_location = locate_piece(King, piece.colour)
+
+    move(start, target)
+    own_king_threatened = piece_under_attack?(king_location)
+    undo_move(start, target, piece, target_piece)
+    own_king_threatened
+  end
+
+  def undo_move(start_location, target_location, start_piece, target_piece)
+    delete_at(target_location)
+    create_new_piece_at(start_piece, start_location)
+    create_new_piece_at(target_piece, target_location)
   end
 
   def checkmate?(king_colour)
