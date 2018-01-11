@@ -38,6 +38,10 @@ class Board
 		end
 	end
 
+  def valid_move?(start, target, player_colour)
+    possible_move?(start, target, player_colour) && !own_king_in_check?(start, target)
+  end
+
   def move(start, target)
     piece = return_piece_at(start)
     create_new_piece_at(piece, target)
@@ -45,7 +49,8 @@ class Board
     #puts "#{piece.first_move}"
   end
 
-  def valid_move?(start, target, player_colour)
+  def possible_move?(start, target, player_colour)
+    # puts "Start: #{start}, #{target}, #{player_colour}"
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
     return false if start == target
@@ -57,7 +62,7 @@ class Board
       return false if route_blocked?(start, target)
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
-    return false if own_king_in_check?(start, piece, target)
+    #return false if own_king_in_check?(start, target)
     true
   end
 
@@ -76,11 +81,21 @@ class Board
   end
 
 
-  def own_king_in_check?(start, piece, target)
+  def own_king_in_check?(start, target)
+    piece = return_piece_at(start)
     target_piece = return_piece_at(target)
-    king_location = locate_piece(King, piece.colour)
+    # puts "Own king colour: #{piece.colour}"
+    # puts "Start: #{start}"
+    # puts "Target piece class: #{target_piece.class}"
+    # puts "Target location: #{target}"
+    #puts "King location: #{king_location}"
 
     move(start, target)
+    king_location = locate_piece(King, piece.colour)
+
+    # puts "King location: #{king_location}"
+    # puts "King class: #{return_piece_at(king_location).class}"
+    # puts "King location under attack? #{piece_under_attack?(king_location)}"
     own_king_threatened = piece_under_attack?(king_location)
     undo_move(start, target, piece, target_piece)
     own_king_threatened
@@ -90,6 +105,7 @@ class Board
     delete_at(target_location)
     create_new_piece_at(start_piece, start_location)
     create_new_piece_at(target_piece, target_location)
+    #empty_sq?(target) ? create_new_piece_at(target_piece, target_location)
   end
 
   def checkmate?(king_colour)
@@ -99,6 +115,7 @@ class Board
     #puts attackers.length
     #puts "Attackers: #{attackers}"
     return false if can_king_escape?(king_colour)
+    #puts "Checkmate past escape"
     # puts attackers.length
     # puts attackers.flatten.class
     if attacker_locations.length == 1
@@ -146,6 +163,7 @@ class Board
   end
 
   def can_king_escape?(king_colour)
+
     attacker_colour = other_colour(king_colour)
     king_location = locate_piece(King, king_colour)
     king = return_piece_at(king_location)
@@ -222,6 +240,7 @@ class Board
       end
     end
     locations = locations.flatten if locations.length == 1
+    # => puts "Locations: #{locations}"
     locations
   end
 
@@ -258,7 +277,11 @@ class Board
   end
 
   def create_new_piece_at(piece, square)
-    @contents[square[0]][square[1]] = (piece.class).new(piece.colour, square)
+    if empty_sq?(piece)
+      @contents[square[0]][square[1]] = ' '
+    else
+      @contents[square[0]][square[1]] = (piece.class).new(piece.colour, square)
+    end
   end
 
   def friendly_fire?(piece, target)
@@ -285,7 +308,36 @@ class Board
 end
 
 #
-#   board = Board.new
+    #  board = Board.new
+    #   board.move([1,5],[5,5])
+  #  puts board.contents[0][5].class
+  #  puts board.return_piece_at([0,5]).class
+  #
+  # #  board.move([7,3],[2,7])
+  # #  board.delete_at([1,6])
+  # #  board.delete_at([1,7])
+  # #  board.delete_at([1,8])
+  #   board.visualise
+  #  puts board.checkmate?(:black)
+   # attackers = board.locate_attackers([0,5])
+   # puts "Attackers: #{attackers}"
+   # puts "Piece under attack? #{board.piece_under_attack?(attackers.flatten)}"
+   #board.visualise
+   #expect(board.checkmate?(:black)).to be_truthy
+
+
+
+
+
+
+
+
+  # puts board.valid_move?([6,1],[5,1],:white)
+  # board.move([6,1],[5,1])
+  # puts board.valid_move?([1,2],[3,2],:black)
+  # board.move([0,4],[6,4])
+  # puts board.valid_move?([6,5],[5,5],:white)
+  # board.visualise
 #   pawn = board.return_piece_at([1,1])
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
