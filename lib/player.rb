@@ -20,7 +20,10 @@ class Player
 
   def convert_to_move(input)
     moves = alphanumeric_pairs(input)
-    moves.map { |move| convert(move) }
+    moves = moves.map { |move| convert(move) }
+    #puts "#{moves}"
+    valid_output?(moves)
+    moves
   end
 
   def convert(input)
@@ -43,4 +46,12 @@ class Player
     rows[number]
   end
 
+  def valid_output?(moves)
+    raise Exception.new("invalid_input") unless
+    moves.length == 2 && moves.each {|move| move.length == 2 && move.each {|row_or_col| (0..8).include?(row_or_col)}}
+  end
+
 end
+
+# player = Player.new(1, :black)
+# puts player.elicit_move
