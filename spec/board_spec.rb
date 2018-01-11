@@ -199,6 +199,77 @@ describe Board do
         end
       end #black
 
+      context 'king is in check' do
+        context 'king can\'t move away' do
+          context 'user doesn\'t move out of check' do
+            it 'returns false' do
+              board.move([0,4],[5,5])
+              board.delete_at([6,5])
+              expect(board.valid_move?([6,1],[5,1],:white)).to be_falsey
+              #board.visualise
+            end
+          end
+          context 'user moves king into check' do
+            it 'returns false' do
+              board.move([0,4],[5,5])
+              board.delete_at([6,5])
+              expect(board.valid_move?([7,5],[6,5],:white)).to be_falsey
+              #board.visualise
+            end
+          end
+          context 'user captures attacker' do
+            it 'returns true' do
+              board.move([0,4],[5,5])
+              board.delete_at([6,5])
+              expect(board.valid_move?([6,4],[5,5],:white)).to be_truthy
+              #board.visualise
+            end
+          end
+          context 'user\'s move blocks the attack' do
+            it 'returns true' do
+              board.move([0,4],[5,5])
+              board.delete_at([6,5])
+              expect(board.valid_move?([7,6],[6,5],:white)).to be_truthy
+              #board.visualise
+            end
+          end
+          context 'user\'s king captures attacker' do
+            context 'without putting itself in check' do
+              it 'returns true' do
+                board.move([0,4],[6,5])
+                expect(board.valid_move?([7,5],[6,5],:white)).to be_truthy
+              #  board.visualise
+              end
+            end
+            context 'but puts itself in check' do
+              it 'returns false' do
+                board.move([0,4],[6,5])
+                board.move([0,8],[2,5])
+                expect(board.valid_move?([7,5],[6,5],:white)).to be_falsey
+                #board.visualise
+              end
+            end
+          end
+        end
+        context 'king is not directly in check' do
+          context 'but moves into check' do
+            it 'returns false' do
+              board.move([7,6],[3,7])
+              board.delete_at([1,5])
+              expect(board.valid_move?([0,5],[1,5],:black)).to be_falsey
+              #board.visualise
+            end
+          end
+          context 'but defender moves away, leaving him in check' do
+            it 'returns false' do
+              board.move([7,6],[2,7])
+              expect(board.valid_move?([1,6],[2,6],:black)).to be_falsey
+              board.visualise
+            end
+          end
+        end
+      end
+
     end
   end
 
