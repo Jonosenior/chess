@@ -38,9 +38,9 @@ class Board
 		end
 	end
 
-  def valid_move?(start, target, player_colour)
-    possible_move?(start, target, player_colour) && !own_king_in_check?(start, target)
-  end
+  # def valid_move?(start, target, player_colour)
+  #   possible_move?(start, target, player_colour) && !own_king_in_check?(start, target)
+  # end
 
   def move(start, target)
     piece = return_piece_at(start)
@@ -49,7 +49,7 @@ class Board
     #puts "#{piece.first_move}"
   end
 
-  def possible_move?(start, target, player_colour)
+  def valid_move?(start, target, player_colour)
     # puts "Start: #{start}, #{target}, #{player_colour}"
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
@@ -62,7 +62,7 @@ class Board
       return false if route_blocked?(start, target)
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
-    #return false if own_king_in_check?(start, target)
+    return false if own_king_in_check?(start, target)
     true
   end
 
@@ -106,6 +106,11 @@ class Board
     create_new_piece_at(start_piece, start_location)
     create_new_piece_at(target_piece, target_location)
     #empty_sq?(target) ? create_new_piece_at(target_piece, target_location)
+  end
+
+  def stalemate?(king_colour)
+    king_location = locate_piece(King, king_colour)
+    !piece_under_attack?(king_location, king_colour) && checkmate?(king_colour)
   end
 
   def checkmate?(king_colour)
