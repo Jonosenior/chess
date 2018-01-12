@@ -1,4 +1,5 @@
 require File.expand_path("../../lib/board", __FILE__)
+require 'pry'
 
 describe Board do
   subject(:board) { Board.new }
@@ -446,6 +447,53 @@ describe Board do
               #board.visualise
               expect(board.checkmate?(:white)).to be_falsey
             end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#stalemate?' do
+    context 'king is in check' do
+      it 'returns false' do
+        (0..7).each {|x| (1..8).each {|y| board.delete_at([x,y])}}
+        board.contents[0][1] = King.new(:black,[0,1])
+        board.contents[0][5] = Rook.new(:white,[0,5])
+        board.contents[5][3] = King.new(:white,[5,3])
+        expect(board.stalemate?(:white)).to be_falsey
+      end
+    end
+    context 'king is in checkmate' do
+      it 'returns false' do
+        board.move([0,2],[6,7])
+        board.move([7,8],[7,6])
+        #board.visualise
+        expect(board.stalemate?(:white)).to be_falsey
+      end
+    end
+    context 'king is not in check' do
+      context 'and all its moves would be check' do
+        context 'and there are no other pieces' do
+          it 'returns true' do
+            (0..7).each {|x| (1..8).each {|y| board.delete_at([x,y])}}
+            board.contents[0][1] = King.new(:black,[0,1])
+            board.contents[1][5] = Rook.new(:white,[1,5])
+            board.contents[4][2] = Rook.new(:white,[4,2])
+            board.contents[5][3] = King.new(:white,[5,3])
+            #board.visualise
+            expect(board.stalemate?(:white)).to be_truthy
+          end
+        end
+        context 'but there is another friendly piece which can move' do
+          it 'returns false' do
+            (0..7).each {|x| (1..8).each {|y| board.delete_at([x,y])}}
+            board.contents[0][1] = King.new(:black,[0,1])
+            board.contents[1][5] = Rook.new(:white,[1,5])
+            board.contents[4][2] = Rook.new(:white,[4,2])
+            board.contents[5][3] = King.new(:white,[5,3])
+            board.contents[1][7] = Pawn.new(:black,[1,7])
+            board.visualise
+            expect(board.stalemate?(:white)).to be_falsey
           end
         end
       end
