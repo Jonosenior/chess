@@ -50,7 +50,7 @@ class Board
   end
 
   def valid_move?(start, target, player_colour)
-    # puts "Start: #{start}, #{target}, #{player_colour}"
+    #puts "Start: #{start}, #{target}, #{player_colour}"
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
     return false if start == target
@@ -74,6 +74,8 @@ class Board
         next if empty_sq?(piece) || piece.colour != attacker_colour
       #  puts "#{piece.moveset}" if piece.class == Queen
       #  moveset = piece.moveset
+        #puts "piece location: #{piece.location}"
+        #binding.pry
         return true if valid_move?(piece.location, location, attacker_colour)
       end
     end
@@ -96,6 +98,7 @@ class Board
     # puts "King location: #{king_location}"
     # puts "King class: #{return_piece_at(king_location).class}"
     # puts "King location under attack? #{piece_under_attack?(king_location)}"
+    #binding.pry
     own_king_threatened = piece_under_attack?(king_location)
     undo_move(start, target, piece, target_piece)
     own_king_threatened
@@ -108,9 +111,32 @@ class Board
     #empty_sq?(target) ? create_new_piece_at(target_piece, target_location)
   end
 
-  def stalemate?(king_colour)
+  def stalemate?(player_colour)
+    king_colour = other_colour(player_colour)
     king_location = locate_piece(King, king_colour)
-    !piece_under_attack?(king_location, king_colour) && checkmate?(king_colour)
+    #binding.pry
+    #puts "king location: #{king_location}"
+    !piece_under_attack?(king_location, king_colour) && !any_valid_moves?(king_colour)
+  end
+
+  def any_valid_moves?(king_colour)
+    @contents.each do |row|
+      row.each do |piece|
+        next if empty_sq?(piece) || piece.colour != king_colour
+        piece.moveset.each do |target|
+          #puts "piece: #{piece}"
+          # binding.pry
+          if target[0].class == Array
+            target.each do |target_sub|
+              return true if valid_move?(piece.location,target_sub,king_colour)
+            end
+          else
+            return true if valid_move?(piece.location,target,king_colour)
+          end
+        end
+      end
+    end
+    false
   end
 
   def checkmate?(king_colour)
@@ -222,11 +248,7 @@ class Board
 
   def transition_square_blocked?(piece)
     x,y = piece.location[0], piece.location[1]
-    if piece.colour == :white
-      !empty_sq?([x-1,y])
-    else
-      !empty_sq?([x+1,y])
-    end
+    piece.colour == :white ? !empty_sq?([x-1,y]) : !empty_sq?([x+1,y])
   end
 
   def target_type(location)
