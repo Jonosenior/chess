@@ -21,31 +21,20 @@ class Pawn < Piece
     @first_move = first_move
   end
 
-  def moveset(target_type)
-    # puts "TARGET TYPE: #{target_type}"
+  def moveset
     x = @location[0]
     y = @location[1]
 
-    @colour == :white ? moveset_white(target_type,x,y) : moveset_black(target_type,x,y)
-
-  end
-
-  def moveset_white(target_type,x,y)
-    if target_type == :enemy
-      moveset = [[x-1, y+1], [x-1, y-1]]
-    elsif target_type == :empty
-      @first_move ? moveset = [[x-1, y],[x-2,y]] : moveset = [x-1,y]
-    end
+    @colour == :white ? moveset = moveset_white(x,y) : moveset = moveset_black(x,y)
     moveset.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
-  def moveset_black(target_type,x,y)
-    if target_type == :enemy
-      moveset = [[x+1, y+1], [x+1, y-1]]
-    elsif target_type == :empty
-      @first_move ? moveset = [[x+1, y],[x+2,y]] : moveset = [x-1,y]
-    end
-    moveset.delete_if { |a| board_limits(a[0],a[1]) }
+  def moveset_white(x,y)
+    @first_move ? [[x-1, y],[x-2,y],[x-1, y+1],[x-1, y-1]] : [[x-1,y],[x-1, y+1], [x-1, y-1]]
+  end
+
+  def moveset_black(x,y)
+      @first_move ? [[x+1, y],[x+2,y],[x+1, y+1],[x+1, y-1]] : [[x-1,y],[x+1, y+1],[x+1, y-1]]
   end
 
 end
