@@ -484,19 +484,34 @@ describe Board do
             expect(board.stalemate?(:white)).to be_truthy
           end
         end
-        context 'but there is another friendly piece which can move' do
-          it 'returns false' do
-            (0..7).each {|x| (1..8).each {|y| board.delete_at([x,y])}}
-            board.contents[0][1] = King.new(:black,[0,1])
-            board.contents[1][5] = Rook.new(:white,[1,5])
-            board.contents[4][2] = Rook.new(:white,[4,2])
-            board.contents[5][3] = King.new(:white,[5,3])
-            board.contents[1][7] = Pawn.new(:black,[1,7])
-            board.visualise
-            expect(board.stalemate?(:white)).to be_falsey
+        context 'but there is another friendly piece' do
+          context  'which can move' do
+            it 'returns false' do
+              (0..7).each {|x| (1..8).each {|y| board.delete_at([x,y])}}
+              board.contents[0][1] = King.new(:black,[0,1])
+              board.contents[1][5] = Rook.new(:white,[1,5])
+              board.contents[4][2] = Rook.new(:white,[4,2])
+              board.contents[5][3] = King.new(:white,[5,3])
+              board.contents[1][7] = Pawn.new(:black,[1,7])
+              board.visualise
+              expect(board.stalemate?(:white)).to be_falsey
+            end
+          end
+          context 'but it can\'t move without putting king in check' do
+            it 'returns true' do
+                (0..7).each {|x| (1..8).each {|y| board.delete_at([x,y])}}
+                board.contents[0][1] = King.new(:black,[0,1])
+                board.contents[1][3] = Bishop.new(:white,[1,3])
+                board.contents[2][3] = Bishop.new(:white,[2,3])
+                board.contents[2][2] = King.new(:white,[2,2])
+                board.contents[1][2] = Knight.new(:black,[1,2])
+                board.visualise
+                expect(board.stalemate?(:white)).to be_truthy
+            end
           end
         end
       end
+      # context 'and it can move out of check'
     end
   end
 
@@ -571,6 +586,39 @@ describe Board do
     end
   end
 
+  describe '#pawn_to_promote' do
+    context 'white pawn moves to last row (contents[0])' do
+      it 'returns true' do
+        board.delete_at([1,1])
+        board.move([6,1],[0,1])
+        expect(board.pawn_to_promote?(:white)).to be_truthy
+      end
+      it 'returns false for black' do
+        board.delete_at([1,1])
+        board.move([6,1],[0,1])
+        expect(board.pawn_to_promote?(:black)).to be_falsey
+      end
+    end
+  end
+
+  describe '#promote' do
+    context 'white pawn is on last row' do
+      it 'deletes pawn' do
+        board.delete_at([1,1])
+        board.move([6,1],[0,1])
+        board.promote(Queen,:white)
+        expect(board.contents[0].any? {|a| a.class == Pawn}).to be_falsey
+      end
+      context 'passed a new_class of Queen' do
+        it 'creates a Queen' do
+          board.delete_at([1,1])
+          board.move([6,1],[0,1])
+          board.promote(Queen,:white)
+          expect(board.contents[0].count {|a| a.class == Queen}).to eq(2)
+        end
+      end
+    end
+  end
 
 
 # PRIVATE METHODS (IE, LIKELY TO BE PRIVATE:)
