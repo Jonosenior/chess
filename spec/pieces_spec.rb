@@ -8,29 +8,26 @@ describe Pawn do
         subject(:pawn) {Pawn.new(:white, [6,2], true)}
           context 'with an empty square in front' do
             it 'can move two squares forward' do
-              expect(pawn.moveset(:empty)).to include([4,2])
+              expect(pawn.moveset).to include([4,2])
             end
             it 'can move one square forward' do
-              expect(pawn.moveset(:empty)).to include([4,2])
-            end
-            it 'only has two possible moves' do
-              expect(pawn.moveset(:empty).length).to eq(2)
+              expect(pawn.moveset).to include([4,2])
             end
           end  #empty square in front
 
           context 'with an enemy piece diagonally in front' do
             it 'can move diagonally left' do
-              expect(pawn.moveset(:enemy)).to include([5,1])
+              expect(pawn.moveset).to include([5,1])
             end
             it 'can move diagonally right' do
-              expect(pawn.moveset(:enemy)).to include([5,3])
+              expect(pawn.moveset).to include([5,3])
             end
           end
       end #/on its first move
       context 'in the middle of the board' do
         subject(:pawn) {Pawn.new(:white, [3,4], true)}
         it 'cannot move backwards' do
-          expect(pawn.moveset(:empty)).not_to include([4,4])
+          expect(pawn.moveset).not_to include([4,4])
         end
       end
     end #/white pawn
