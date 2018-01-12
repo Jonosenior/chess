@@ -218,43 +218,25 @@ class Board
     attackers
   end
 
-  # def check?(king_location, king_colour, player_colour)
-  #   #king_location = locate_piece(King, king_colour)
-  #   #puts king_location
-  #   @contents.each do |row|
-  #     row.each do |piece|
-  #       next if piece.class == String || piece.colour == king_colour
-  #     #  puts "#{piece.moveset}" if piece.class == Queen
-  #       moveset = piece.moveset
-  #       return true if valid_move?(piece.location, king_location, player_colour)
-  #     end
-  #   end
-  #   false
-  # end
-
-
   def valid_pawn_move?(piece, target)
-    return false if diagonal_pawn_move?(piece, target) && empty_sq?(target)
-    return false if !diagonal_pawn_move?(piece, target) && !empty_sq?(target)
-    return false if double_sq_pawn_move?(piece, target) && transition_square_blocked?(piece)
+    y_start, x_start = piece.location[0], piece.location[1]
+    y_target, x_target = target[0], target[1]
+    return false if diagonal_pawn_move?(y_start, x_start, y_target, x_target) && empty_sq?(target)
+    return false if !diagonal_pawn_move?(y_start, x_start, y_target, x_target) && !empty_sq?(target)
+    return false if double_sq_pawn_move?(y_start, x_start, y_target, x_target) && transition_square_blocked?(y_start, x_start, piece.colour)
     true
   end
 
-  def diagonal_pawn_move?(piece, target)
-    y_start, x_start = piece.location[0], piece.location[1]
-    y_target, x_target = target[0], target[1]
+  def diagonal_pawn_move?(y_start, x_start, y_target, x_target)
     y_start != y_target && x_start != x_target
   end
 
-  def double_sq_pawn_move?(piece, target)
-    y_start, x_start = piece.location[0], piece.location[1]
-    y_target, x_target = target[0], target[1]
+  def double_sq_pawn_move?(y_start, x_start, y_target, x_target)
     y_start == y_target + 2 || y_start == y_target - 2 && x_start == x_target
   end
 
-  def transition_square_blocked?(piece)
-    y,x = piece.location[0], piece.location[1]
-    piece.colour == :white ? !empty_sq?([y-1,x]) : !empty_sq?([y+1,x])
+  def transition_square_blocked?(y_start, x_start, piece_colour)
+    piece_colour == :white ? !empty_sq?([y_start-1,x_start]) : !empty_sq?([y_start+1,x_start])
   end
 
   def target_type(location)
