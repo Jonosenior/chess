@@ -60,7 +60,6 @@ class Game
   end
 
 
-
   def create_players
     @players = [Player.new(1, :white)] << Player.new(2, :black)
   end

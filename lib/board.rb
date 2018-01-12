@@ -179,6 +179,21 @@ class Board
     [row,col]
   end
 
+  def set_en_passant_square(pawn_colour,target)
+    passed_square = passed_square(pawn_colour,target)
+    if pawn_colour == :white
+      @en_passant_white = vulnerable_square
+    else
+      @en_passant_black = vulnerable_square
+    end
+  end
+
+  def passed_square(pawn_colour, target)
+    y = target[0]
+    x = target[1]
+    pawn_colour == :white ? [y+1,x] : [y-1,x]
+  end
+
 
   #PRIVATE
 
@@ -283,22 +298,11 @@ class Board
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
     start_index, target_index = line.index(start), line.index(target)
-    #  puts "START #{start_index}"
-    #  puts "TARGET #{target_index}"
-    #  puts "LINE: #{line}"
     if start_index > target_index
       line = line.reverse
       start_index, target_index = line.index(start), line.index(target)
     end
-    # puts "START #{start_index}"
-    # puts "TARGET #{target_index}"
-    # puts "LINE: #{line}"
-    #puts "LINE: #{line[start_index...target_index]}"
     route = line[start_index+1...target_index]
-    # puts "#{line}"
-    # puts "#{start_index}"
-    # puts "#{target_index}"
-    # puts "#{route}"
   end
 
   def delete_at(sq)
@@ -334,57 +338,8 @@ class Board
     sq[0] < 0 || sq[0] > 7 || sq[1] > 8 || sq[1] < 1
   end
 
-  # def get_constant(name)
-  #   Object.const_get(name)
-  # end
-
 end
 
-board = Board.new
-#puts board.get_constant("Pawn")
-# puts board.pawn_to_promote?(:white)
-# index = board.contents[0].index {|a| a.class == Pawn}
-# if index
-#   puts [0,index]
-# else
-#   index = board.contents[7].index {|a| a.class == Queen}
-#   puts [7,index]
-# end
-
-
-#puts board.contents[0].any? {|a| a.class == Pawn}
-#
-    #  board = Board.new
-    #   board.move([1,5],[5,5])
-  #  puts board.contents[0][5].class
-  #  puts board.return_piece_at([0,5]).class
-  #
-  # #  board.move([7,3],[2,7])
-  # #  board.delete_at([1,6])
-  # #  board.delete_at([1,7])
-  # #  board.delete_at([1,8])
-  #   board.visualise
-  #  puts board.checkmate?(:black)
-   # attackers = board.locate_attackers([0,5])
-   # puts "Attackers: #{attackers}"
-   # puts "Piece under attack? #{board.piece_under_attack?(attackers.flatten)}"
-   #board.visualise
-   #expect(board.checkmate?(:black)).to be_truthy
-
-
-
-
-
-
-
-
-  # puts board.valid_move?([6,1],[5,1],:white)
-  # board.move([6,1],[5,1])
-  # puts board.valid_move?([1,2],[3,2],:black)
-  # board.move([0,4],[6,4])
-  # puts board.valid_move?([6,5],[5,5],:white)
-  # board.visualise
-#   pawn = board.return_piece_at([1,1])
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
 #
