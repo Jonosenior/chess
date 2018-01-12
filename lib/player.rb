@@ -51,7 +51,28 @@ class Player
     moves.length == 2 && moves.each {|move| move.length == 2 && move.each {|row_or_col| (0..8).include?(row_or_col)}}
   end
 
+  def elicit_pawn_promotion
+    puts "PAWN PROMOTION!"
+    puts "Your pawn made it to the last row."
+    puts "Which piece would you like to promote him to?"
+    puts "Type: Queen, Rook, Bishop or Knight."
+    new_class = gets.chomp.capitalize
+    while !valid_pawn_promotion_input?(new_class)
+      puts "Invalid choice!"
+      puts "Please type Queen, Rook, Bishop or Knight."
+      new_class = gets.chomp.capitalize
+    end
+    new_class
+  end
+
+  def valid_pawn_promotion_input?(input)
+    possible_classes = ["Queen","Rook","Bishop","Knight"]
+    possible_classes.include?(input)
+  end
+
 end
+# player = Player.new(1, :white)
+# puts player.elicit_pawn_promotion
 
 # player = Player.new(1, :black)
 # puts player.elicit_move

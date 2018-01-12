@@ -334,9 +334,14 @@ class Board
     sq[0] < 0 || sq[0] > 7 || sq[1] > 8 || sq[1] < 1
   end
 
+  # def get_constant(name)
+  #   Object.const_get(name)
+  # end
+
 end
 
-# board = Board.new
+board = Board.new
+#puts board.get_constant("Pawn")
 # puts board.pawn_to_promote?(:white)
 # index = board.contents[0].index {|a| a.class == Pawn}
 # if index

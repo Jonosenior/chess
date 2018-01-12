@@ -31,19 +31,32 @@ class Game
   end
 
   def review_turn
-    king_location = @board.locate_piece(King, @current_player.colour)
+    king_colour = @board.other_colour(@current_player.colour)
+    king_location = @board.locate_piece(King, king_colour)
     if @board.piece_under_attack?(king_location)
       if @board.checkmate?(@current_player.colour)
-        puts "Game over"
+        puts "\n\nGame over"
         exit
       else
-        puts "Check!"
+        puts "\n\nCheck!\n\n"
       end
+    elsif @board.stalemate?
+      puts "It's stalemate!"
+      exit
     end
+    pawn_promotion
   end
 
   def complete_turn
     switch_current_player
+  end
+
+  def pawn_promotion
+    if @board.pawn_to_promote?(@current_player.colour)
+      new_class_string = @current_player.elicit_pawn_promotion
+      new_class = get_constant(new_class_string)
+      @board.promote(new_class, @current_player.colour)
+    end
   end
 
 
@@ -61,6 +74,11 @@ class Game
   def switch_current_player
     @current_player = (@current_player == @players[0] ? @players[1] : @players[0])
   end
+
+  def get_constant(class_name_string)
+    Object.const_get(class_name_string)
+  end
+
 
 end
 
