@@ -42,6 +42,27 @@ class Board
   #   possible_move?(start, target, player_colour) && !own_king_in_check?(start, target)
   # end
 
+  def game_status(player_colour)
+    defender_colour = other_colour(player_colour)
+    king_location = locate_piece(King, defender_colour)
+    if piece_under_attack?(king_location, defender_colour)
+      checkmate?(defender_colour) ? return :checkmate : return :check
+    else
+      return :stalemate if stalemate?(player_colour)
+    end
+    return :next_move
+  end
+
+  def en_passant(player_colour, start, target)
+    set_en_passant_square(player_colour, target) if en_passant_possible?(start, target)
+    reset_en_passant_square(player_colour)
+  end
+
+  def en_passant_possible?(start, target)
+    piece = return_piece_at(start)
+    piece.class == Pawn && double_sq_pawn_move?(start)
+  end
+
   def move(start, target)
     piece = return_piece_at(start)
     create_new_piece_at(piece, target)
@@ -180,18 +201,27 @@ class Board
   end
 
   def set_en_passant_square(pawn_colour,target)
-    passed_square = passed_square(pawn_colour,target)
     if pawn_colour == :white
-      @en_passant_white = vulnerable_square
+      @en_passant_white = passed_square(:white,target)
     else
-      @en_passant_black = vulnerable_square
+      @en_passant_black = passed_square(:black,target)
     end
+  end
+
+  def return_en_passant_square(player_colour)
+    pawn_colour = other_colour(player_colour)
+    pawn_colour == :white ? @en_passant_white : @en_passant_black
   end
 
   def passed_square(pawn_colour, target)
     y = target[0]
     x = target[1]
     pawn_colour == :white ? [y+1,x] : [y-1,x]
+  end
+
+  def reset_en_passant_square(player_colour)
+    colour = other_colour(player_colour)
+    colour == :white ? @en_passant_white = [] : @en_passant_black = []
   end
 
 
@@ -254,6 +284,7 @@ class Board
   def valid_pawn_move?(piece, target)
     y_start, x_start = piece.location[0], piece.location[1]
     y_target, x_target = target[0], target[1]
+    return true if target == return_en_passant_square(piece.colour)
     return false if diagonal_pawn_move?(y_start, x_start, y_target, x_target) && empty_sq?(target)
     return false if !diagonal_pawn_move?(y_start, x_start, y_target, x_target) && !empty_sq?(target)
     return false if double_sq_pawn_move?(y_start, x_start, y_target, x_target) && transition_square_blocked?(y_start, x_start, piece.colour)
@@ -264,7 +295,9 @@ class Board
     y_start != y_target && x_start != x_target
   end
 
-  def double_sq_pawn_move?(y_start, x_start, y_target, x_target)
+  def double_sq_pawn_move?(start, target)
+    y_start, x_start = start[0], start[1]
+    y_target, x_target = target[0], target[1]
     y_start == y_target + 2 || y_start == y_target - 2 && x_start == x_target
   end
 

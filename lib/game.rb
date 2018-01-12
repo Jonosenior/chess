@@ -23,28 +23,18 @@ class Game
         puts "Not a valid move!"
         redo
       end
-      @board.move(start, target)
+      process_turn
       @board.visualise
       review_turn
       complete_turn
     end
   end
 
-  def review_turn
-    king_colour = @board.other_colour(@current_player.colour)
-    king_location = @board.locate_piece(King, king_colour)
-    if @board.piece_under_attack?(king_location)
-      if @board.checkmate?(@current_player.colour)
-        puts "\n\nGame over"
-        exit
-      else
-        puts "\n\nCheck!\n\n"
-      end
-    elsif @board.stalemate?
-      puts "It's stalemate!"
-      exit
-    end
-    pawn_promotion
+  def process_turn
+    @board.en_passant(@current_player.colour, start, target)
+    @board.move(start, target)
+    @board.promote
+
   end
 
   def complete_turn
