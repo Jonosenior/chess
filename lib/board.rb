@@ -56,7 +56,7 @@ class Board
     return false if start == target
     piece = return_piece_at(start)
     return false if player_colour != piece.colour
-    return false if !target_within_moveset?(target, piece.moveset) unless piece.class == Pawn
+    return false if !target_within_moveset?(target, piece.moveset) # unless piece.class == Pawn
     return false if friendly_fire?(piece, target)
     if piece.class == Rook || piece.class == Bishop || piece.class == Queen
       return false if route_blocked?(start, target)
@@ -234,13 +234,19 @@ class Board
 
 
   def valid_pawn_move?(piece, target)
-    target_type = target_type(target)
-    moveset = piece.moveset(target_type)
-    return false if double_pawn_move?(piece, target) && transition_square_blocked?(piece)
-    target_within_moveset?(target, moveset)
+    return false if diagonal_pawn_move?(piece, target) && empty_sq?(target)
+    return false if !diagonal_pawn_move?(piece, target) && !empty_sq?(target)
+    return false if double_sq_pawn_move?(piece, target) && transition_square_blocked?(piece)
+    true
   end
 
-  def double_pawn_move?(piece, target)
+  def diagonal_pawn_move?(piece, target)
+    x_start, y_start = piece.location[0], piece.location[1]
+    x_target, y_target = target[0], target[1]
+    x_start != x_target && y_start != y_target
+  end
+
+  def double_sq_pawn_move?(piece, target)
     x_start, y_start = piece.location[0], piece.location[1]
     x_target, y_target = target[0], target[1]
     x_start == x_target + 2 || x_start == x_target - 2 && y_start == y_target
