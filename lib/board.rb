@@ -162,6 +162,24 @@ class Board
     true
   end
 
+  def pawn_to_promote?(player_colour)
+    row = (player_colour == :white) ? 0 : 7
+    @contents[row].any? {|a| a.class == Pawn}
+  end
+
+  def promote(new_class, colour)
+    pawn_index = index_of_pawn_to_promote(colour)
+    new_piece = new_class.new(colour,pawn_index)
+    create_new_piece_at(new_piece,pawn_index)
+  end
+
+  def index_of_pawn_to_promote(player_colour)
+    row = (player_colour == :white) ? 0 : 7
+    col = @contents[row].index {|a| a.class == Pawn}
+    [row,col]
+  end
+
+
   #PRIVATE
 
 
@@ -237,10 +255,6 @@ class Board
 
   def transition_square_blocked?(y_start, x_start, piece_colour)
     piece_colour == :white ? !empty_sq?([y_start-1,x_start]) : !empty_sq?([y_start+1,x_start])
-  end
-
-  def target_type(location)
-    empty_sq?(location) ? :empty : :enemy
   end
 
   def other_colour(colour)
@@ -322,6 +336,18 @@ class Board
 
 end
 
+# board = Board.new
+# puts board.pawn_to_promote?(:white)
+# index = board.contents[0].index {|a| a.class == Pawn}
+# if index
+#   puts [0,index]
+# else
+#   index = board.contents[7].index {|a| a.class == Queen}
+#   puts [7,index]
+# end
+
+
+#puts board.contents[0].any? {|a| a.class == Pawn}
 #
     #  board = Board.new
     #   board.move([1,5],[5,5])
