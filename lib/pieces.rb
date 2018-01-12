@@ -22,19 +22,19 @@ class Pawn < Piece
   end
 
   def moveset
-    x = @location[0]
-    y = @location[1]
+    y = @location[0]
+    x = @location[1]
 
-    @colour == :white ? moveset = moveset_white(x,y) : moveset = moveset_black(x,y)
+    @colour == :white ? moveset = moveset_white(y,x) : moveset = moveset_black(y,x)
     moveset.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
-  def moveset_white(x,y)
-    @first_move ? [[x-1, y],[x-2,y],[x-1, y+1],[x-1, y-1]] : [[x-1,y],[x-1, y+1], [x-1, y-1]]
+  def moveset_white(y,x)
+    @first_move ? [[y-1, x],[y-2,x],[y-1, x+1],[y-1, x-1]] : [[y-1,x],[y-1, x+1], [y-1, x-1]]
   end
 
-  def moveset_black(x,y)
-      @first_move ? [[x+1, y],[x+2,y],[x+1, y+1],[x+1, y-1]] : [[x-1,y],[x+1, y+1],[x+1, y-1]]
+  def moveset_black(y,x)
+      @first_move ? [[y+1, x],[y+2,x],[y+1, x+1],[y+1, x-1]] : [[y-1,x],[y+1, x+1],[y+1, x-1]]
   end
 
 end

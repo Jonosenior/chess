@@ -241,20 +241,20 @@ class Board
   end
 
   def diagonal_pawn_move?(piece, target)
-    x_start, y_start = piece.location[0], piece.location[1]
-    x_target, y_target = target[0], target[1]
-    x_start != x_target && y_start != y_target
+    y_start, x_start = piece.location[0], piece.location[1]
+    y_target, x_target = target[0], target[1]
+    y_start != y_target && x_start != x_target
   end
 
   def double_sq_pawn_move?(piece, target)
-    x_start, y_start = piece.location[0], piece.location[1]
-    x_target, y_target = target[0], target[1]
-    x_start == x_target + 2 || x_start == x_target - 2 && y_start == y_target
+    y_start, x_start = piece.location[0], piece.location[1]
+    y_target, x_target = target[0], target[1]
+    y_start == y_target + 2 || y_start == y_target - 2 && x_start == x_target
   end
 
   def transition_square_blocked?(piece)
-    x,y = piece.location[0], piece.location[1]
-    piece.colour == :white ? !empty_sq?([x-1,y]) : !empty_sq?([x+1,y])
+    y,x = piece.location[0], piece.location[1]
+    piece.colour == :white ? !empty_sq?([y-1,x]) : !empty_sq?([y+1,x])
   end
 
   def target_type(location)
