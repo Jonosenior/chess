@@ -45,6 +45,10 @@ describe Player do
         allow(player).to receive(:gets).and_return("h8 to a1")
         expect(player.elicit_move).to eq([[0,8],[7,1]])
       end
+      it 'returns the correct conversion' do
+        allow(player).to receive(:gets).and_return("g1 to h3")
+        expect(player.elicit_move).to eq([[7,7],[5,8]])
+      end
     end
 
     context 'user enters an incorrect string' do

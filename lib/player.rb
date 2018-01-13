@@ -1,3 +1,5 @@
+require 'pry'
+
 class Player
 
   attr_reader :colour, :name
@@ -29,6 +31,7 @@ class Player
   def convert(input)
     row = convert_row(input[1].to_i)
     column = convert_column(input[0])
+    # binding.pry
     [row, column]
   end
 
@@ -37,12 +40,14 @@ class Player
   end
 
   def convert_column(letter)
-    columns = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "H" => 8}
+    columns = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "G" => 7, "H" => 8}
+    # binding.pry
     columns[letter.upcase]
   end
 
   def convert_row(number)
     rows = {8 => 0, 7 => 1, 6 => 2, 5 => 3, 4 => 4, 3 => 5, 2 => 6, 1 => 7}
+    # binding.pry
     rows[number]
   end
 
@@ -52,7 +57,7 @@ class Player
   end
 
   def elicit_pawn_promotion
-    puts "PAWN PROMOTION!"
+    puts "#{@name.capitalize} PAWN PROMOTION!"
     puts "Your pawn made it to the last row."
     puts "Which piece would you like to promote him to?"
     puts "Type: Queen, Rook, Bishop or Knight."
@@ -72,6 +77,12 @@ class Player
 
 end
 # player = Player.new(1, :white)
+# input = player.elicit_move
+# puts input
+
+#allow(player).to receive(:gets).and_return("g1 to h3")
+#expect(player.elicit_move).to eq([[7,7],[5,8]])
+
 # puts player.elicit_pawn_promotion
 
 # player = Player.new(1, :black)
