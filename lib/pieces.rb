@@ -1,3 +1,5 @@
+require 'pry'
+
 class Piece
   attr_reader :colour, :location
 
@@ -55,7 +57,9 @@ class Knight < Piece
         possible_moves << [row,col] if legal_knight_move?(location, [row,col])
       end
     end
+    #binding.pry
     possible_moves.delete_if { |a| board_limits(a[0],a[1]) }
+    #binding.pry
   end
 
   def legal_knight_move?(start_position,finish_position)

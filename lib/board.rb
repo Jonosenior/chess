@@ -46,11 +46,12 @@ class Board
     defender_colour = other_colour(player_colour)
     king_location = locate_piece(King, defender_colour)
     if piece_under_attack?(king_location, defender_colour)
-      checkmate?(defender_colour) ? return :checkmate : return :check
+      checkmate?(defender_colour) ? :checkmate : :check
+    elsif stalemate?(player_colour)
+       :stalemate
     else
-      return :stalemate if stalemate?(player_colour)
+      :next_move
     end
-    return :next_move
   end
 
   def en_passant(player_colour, start, target)
@@ -60,7 +61,7 @@ class Board
 
   def en_passant_possible?(start, target)
     piece = return_piece_at(start)
-    piece.class == Pawn && double_sq_pawn_move?(start)
+    piece.class == Pawn && double_sq_pawn_move?(start, target)
   end
 
   def move(start, target)
@@ -287,7 +288,7 @@ class Board
     return true if target == return_en_passant_square(piece.colour)
     return false if diagonal_pawn_move?(y_start, x_start, y_target, x_target) && empty_sq?(target)
     return false if !diagonal_pawn_move?(y_start, x_start, y_target, x_target) && !empty_sq?(target)
-    return false if double_sq_pawn_move?(y_start, x_start, y_target, x_target) && transition_square_blocked?(y_start, x_start, piece.colour)
+    return false if double_sq_pawn_move?(piece.location, target) && transition_square_blocked?(y_start, x_start, piece.colour)
     true
   end
 
