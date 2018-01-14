@@ -38,9 +38,9 @@ class Board
 		end
 	end
 
-  # def valid_move?(start, target, player_colour)
-  #   possible_move?(start, target, player_colour) && !own_king_in_check?(start, target)
-  # end
+
+
+
 
   def game_status(player_colour)
     defender_colour = other_colour(player_colour)
@@ -85,7 +85,12 @@ class Board
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
     return false if own_king_in_check?(start, target)
+    #if piece.class == King then return false if !valid_king_move?(piece, target) end
     true
+  end
+
+  def valid_king_move?(piece, target)
+    return true
   end
 
   def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
@@ -372,7 +377,26 @@ class Board
     sq[0] < 0 || sq[0] > 7 || sq[1] > 8 || sq[1] < 1
   end
 
+  def return_castling_rook(start, target)
+    kingside = (target[1] == start[1] + 2) ? true : false
+    rook_location = kingside ? [target[0], target[1] + 1] : [target[0], target[1] - 2]
+    return_piece_at(rook_location)
+  end
+
+  def route_in_check?(route, king_colour)
+    route.each do |square|
+      return true if piece_under_attack?(square, king_colour)
+    end
+    false
+  end
+
 end
+
+
+ # board = Board.new
+ # start = [7,5]
+ # target = [7,3]
+ # puts board.return_castling_rook(start, target).location
 
 
 # [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
