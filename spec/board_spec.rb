@@ -265,13 +265,27 @@ describe Board do
             it 'returns false' do
               board.move([7,6],[2,7])
               expect(board.valid_move?([1,6],[2,6],:black)).to be_falsey
-              board.visualise
+              #board.visualise
             end
           end
         end
       end
 
     end
+
+    context 'the king' do
+      context 'not in check' do
+        context 'with two empty spaces kingside' do
+          it 'returns true' do
+            board.delete_at([7,6])
+            board.delete_at([7,7])
+            board.visualise
+            expect(board.valid_move?([7,5],[7,7],:white)).to be_truthy
+          end
+        end
+      end
+    end
+
   end
 
   describe '#move' do
@@ -493,7 +507,7 @@ describe Board do
               board.contents[4][2] = Rook.new(:white,[4,2])
               board.contents[5][3] = King.new(:white,[5,3])
               board.contents[1][7] = Pawn.new(:black,[1,7])
-              board.visualise
+              #board.visualise
               expect(board.stalemate?(:white)).to be_falsey
             end
           end
@@ -505,7 +519,7 @@ describe Board do
                 board.contents[2][3] = Bishop.new(:white,[2,3])
                 board.contents[2][2] = King.new(:white,[2,2])
                 board.contents[1][2] = Knight.new(:black,[1,2])
-                board.visualise
+                #board.visualise
                 expect(board.stalemate?(:white)).to be_truthy
             end
           end

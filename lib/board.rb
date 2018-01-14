@@ -8,9 +8,9 @@ class Board
 
   def initialize
     @contents =
-              [['8',  Rook.new(:black, [0, 1]), Knight.new(:black, [0, 2]),
-                Bishop.new(:black, [0, 3]),	Queen.new(:black, [0, 4]), King.new(:black, [0, 5]),
-                Bishop.new(:black, [0, 6]),	Knight.new(:black, [0, 7]), Rook.new(:black, [0, 8])],
+              [['8',  Rook.new(:black, [0, 1], true), Knight.new(:black, [0, 2]),
+                Bishop.new(:black, [0, 3]),	Queen.new(:black, [0, 4]), King.new(:black, [0, 5], true),
+                Bishop.new(:black, [0, 6]),	Knight.new(:black, [0, 7]), Rook.new(:black, [0, 8], true)],
               ['7',  Pawn.new(:black, [1, 1], true), Pawn.new(:black, [1, 2], true),
                Pawn.new(:black,  [1, 3], true),	Pawn.new(:black, [1, 4], true), Pawn.new(:black, [1,5], true),
                Pawn.new(:black, [1,6], true),	Pawn.new(:black, [1,7], true), Pawn.new(:black, [1,8], true)],
@@ -21,9 +21,9 @@ class Board
                ['2',  Pawn.new(:white, [6 ,1], true), Pawn.new(:white, [6,2], true),
                Pawn.new(:white, [6,3], true), Pawn.new(:white, [6,4], true), Pawn.new(:white, [6,5], true),
                Pawn.new(:white, [6,6], true), Pawn.new(:white, [6,7], true), Pawn.new(:white, [6,8], true)],
-                ['1',  Rook.new(:white, [7,1]), Knight.new(:white, [7,2]),
-                Bishop.new(:white, [7,3]), Queen.new(:white, [7,4]), King.new(:white, [7,5]),
-                Bishop.new(:white, [7,6]), Knight.new(:white, [7,7]), Rook.new(:white, [7,8])]]
+                ['1',  Rook.new(:white, [7,1], true), Knight.new(:white, [7,2]),
+                Bishop.new(:white, [7,3]), Queen.new(:white, [7,4]), King.new(:white, [7,5], true),
+                Bishop.new(:white, [7,6]), Knight.new(:white, [7,7]), Rook.new(:white, [7,8], true)]]
   end
 
 
@@ -91,7 +91,8 @@ class Board
     rook = return_castling_rook(piece.location, target)
     return false if rook.class != Rook || !rook.first_move
     return false if route_blocked?(rook.location, piece.location)
-    route = intermediary_squares(target, piece.location)
+    binding.pry
+    route = intermediary_squares(piece.location, rook.location)
     return false if route_in_check?(route, piece.colour)
     true
   end
@@ -403,7 +404,7 @@ class Board
 
 end
 
- board = Board.new
+ #board = Board.new
  # start = [0,5]
  # target = [0,4]
  # puts board.castling_move?(start, target)
