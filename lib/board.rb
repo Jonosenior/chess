@@ -39,9 +39,6 @@ class Board
 	end
 
 
-
-
-
   def game_status(player_colour)
     defender_colour = other_colour(player_colour)
     king_location = locate_piece(King, defender_colour)
@@ -85,12 +82,18 @@ class Board
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
     return false if own_king_in_check?(start, target)
-    #if piece.class == King then return false if !valid_king_move?(piece, target) end
+    if piece.class == King then return false if !valid_castling_move?(piece, target) end
     true
   end
 
-  def valid_king_move?(piece, target)
-    return true
+  def valid_castling_move?(piece, target)
+    return true if !castling_move?(piece.location, target)
+    rook = return_castling_rook(piece.location, target)
+    return false if rook.class != Rook || !rook.first_move
+    return false if route_blocked?(rook.location, piece.location)
+    route = intermediary_squares(target, piece.location)
+    return false if route_in_check?(route, piece.colour)
+    true
   end
 
   def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
@@ -390,12 +393,20 @@ class Board
     false
   end
 
+  def castling_move?(start, target)
+    y_start, x_start = start[0], start[1]
+    y_target, x_target = target[0], target[1]
+    piece = return_piece_at(start)
+    return false if piece.class != King
+    y_start == y_target && (x_target == x_start + 2 || x_target == x_start - 2)
+  end
+
 end
 
-
- # board = Board.new
- # start = [7,5]
- # target = [7,3]
+ board = Board.new
+ # start = [0,5]
+ # target = [0,4]
+ # puts board.castling_move?(start, target)
  # puts board.return_castling_rook(start, target).location
 
 
