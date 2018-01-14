@@ -79,11 +79,12 @@ end
 
 
 class Rook < Piece
-  attr_reader :icon
+  attr_reader :icon, :first_move
 
-  def initialize(colour, location)
-    super
+  def initialize(colour, location, first_move = false)
+    super(colour, location)
     @colour == :white ? @icon = "\u265C" : @icon = "\u2656"
+    @first_move = first_move
   end
 
   def moveset
@@ -175,18 +176,21 @@ class Queen < Piece
 end
 
 class King < Piece
-  attr_reader :icon
+  attr_reader :icon, :first_move
 
-  def initialize(colour, location)
-    super
+  def initialize(colour, location, first_move = false)
+    super(colour, location)
     @colour == :white ? @icon = "\u265A" : @icon = "\u2654"
+    @first_move = first_move
   end
 
   def moveset
     x = location[0]
     y = location[1]
 
-    [[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1],[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1]].delete_if { |a| board_limits(a[0],a[1]) }
+    moveset = [[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1],[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1]]
+    moveset << [x,y-2] << [x,y+2] if @first_move
+    moveset.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
 end

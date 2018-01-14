@@ -149,21 +149,41 @@ end
 describe King do
 
   describe '#moveset' do
-    context 'located on a central square' do
-      subject(:king) {King.new(:white, [4,4])}
+    context 'after first move' do
+      context 'located on a central square' do
+        subject(:king) {King.new(:white, [4,4])}
 
-      it 'returns 8 squares' do
-        expect(king.moveset.length).to eq(8)
+        it 'returns 8 squares' do
+          expect(king.moveset.length).to eq(8)
+        end
+
+        it 'cannot move two squares' do
+          expect(king.moveset).not_to include([4,6])
+        end
+      end
+
+      context 'located on a corner square' do
+        subject(:king) {King.new(:black, [0,8])}
+
+        it 'returns 3 squares' do
+          expect(king.moveset.length).to eq(3)
+        end
       end
     end
 
-    context 'located on a corner square' do
-      subject(:king) {King.new(:black, [0,8])}
+    context 'it has not yet moved' do
+      subject(:king) {King.new(:black, [0,5], true)}
+      it 'can move two squares kingside to castle' do
+        expect(king.moveset).to include([0,7])
+      end
 
-      it 'returns 3 squares' do
-        expect(king.moveset.length).to eq(3)
+      it 'can move two squares queenside' do
+        expect(king.moveset).to include([0,3])
       end
     end
+
+
+
 
   end
 end
