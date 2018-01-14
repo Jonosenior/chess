@@ -20,7 +20,7 @@ class Game
       moves = @current_player.elicit_move
       start = moves[0]
       target = moves[1]
-      binding.pry
+      #binding.pry
       if !@board.valid_move?(start, target, @current_player.colour)
         puts "Not a valid move!"
         redo
