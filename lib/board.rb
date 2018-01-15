@@ -62,6 +62,8 @@ class Board
   end
 
   def move(start, target)
+    # binding.pry
+    if castling_move?(start, target) then move_castling_rook(start, target) end
     piece = return_piece_at(start)
     create_new_piece_at(piece, target)
     delete_at(start)
@@ -81,13 +83,16 @@ class Board
       return false if route_blocked?(start, target)
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
-    return false if own_king_in_check?(start, target)
+    return false if own_king_in_check?(start, target) unless castling_move?(start, target)
+    # binding.pry
     if castling_move?(start, target) then return false if !valid_castling_move?(piece, target) end
+    #binding.pry
     true
   end
 
   def valid_castling_move?(piece, target)
     rook = return_castling_rook(piece.location, target)
+    # binding.pry
     return false if rook.class != Rook || !rook.first_move
     return false if route_blocked?(rook.location, piece.location)
     return false if piece_under_attack?(piece.location, piece.colour)
@@ -113,6 +118,13 @@ class Board
     false
   end
 
+  def move_castling_rook(king_start, king_target)
+    # binding.pry
+    rook = return_castling_rook(king_start, king_target)
+    kingside = (king_target[1] == king_start[1] + 2) ? true : false
+    rook_target = (kingside) ? [king_start[0], king_start[1] + 1] : [king_start[0], king_start[1] - 1]
+    move(rook.location, rook_target)
+  end
 
   def own_king_in_check?(start, target)
     piece = return_piece_at(start)
@@ -385,6 +397,7 @@ class Board
   def return_castling_rook(start, target)
     kingside = (target[1] == start[1] + 2) ? true : false
     rook_location = kingside ? [target[0], target[1] + 1] : [target[0], target[1] - 2]
+    # binding.pry
     return_piece_at(rook_location)
   end
 

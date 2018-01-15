@@ -48,11 +48,8 @@ class Game
   end
 
   def process_turn(start, target)
-    #binding.pry
     @board.en_passant(@current_player.colour, start, target)
-    #binding.pry
     @board.move(start, target)
-    #binding.pry
     pawn_promotion
   end
 
