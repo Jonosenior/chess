@@ -82,17 +82,17 @@ class Board
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
     return false if own_king_in_check?(start, target)
-    if piece.class == King then return false if !valid_castling_move?(piece, target) end
+    if castling_move?(start, target) then return false if !valid_castling_move?(piece, target) end
     true
   end
 
   def valid_castling_move?(piece, target)
-    return true if !castling_move?(piece.location, target)
     rook = return_castling_rook(piece.location, target)
     return false if rook.class != Rook || !rook.first_move
     return false if route_blocked?(rook.location, piece.location)
-    binding.pry
-    route = intermediary_squares(piece.location, rook.location)
+    return false if piece_under_attack?(piece.location, piece.colour)
+    # binding.pry
+    route = intermediary_squares(rook.location, piece.location)
     return false if route_in_check?(route, piece.colour)
     true
   end
@@ -341,6 +341,7 @@ class Board
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
     start_index, target_index = line.index(start), line.index(target)
+    # binding.pry
     if start_index > target_index
       line = line.reverse
       start_index, target_index = line.index(start), line.index(target)
