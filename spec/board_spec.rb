@@ -275,18 +275,105 @@ describe Board do
 
     context 'the king' do
       context 'not in check' do
-        context 'with two empty spaces kingside' do
+        context 'user tries to castle kingside' do
+          context 'with two empty spaces kingside' do
+            it 'returns true' do
+              board.delete_at([7,6])
+              board.delete_at([7,7])
+              # board.visualise
+              expect(board.valid_move?([7,5],[7,7],:white)).to be_truthy
+            end # it
+            context 'king has already moved' do
+              it 'returns false' do
+                board.delete_at([7,6])
+                board.delete_at([7,7])
+                board.move([7,5],[7,6])
+                board.move([7,6],[7,5])
+                # board.visualise
+                expect(board.valid_move?([7,5],[7,7],:white)).to be_falsey
+              end
+            end
+          end # two empty spaces kingside
+        end # castle kingside
+        context 'user tries to castle queenside' do
+          context 'with three empty spaces queenside' do
+            context 'with no part of route in check' do
+              it 'returns true' do
+                board.delete_at([7,4])
+                board.delete_at([7,3])
+                board.delete_at([7,2])
+                # board.visualise
+                expect(board.valid_move?([7,5],[7,3],:white)).to be_truthy
+              end #it
+            end # route not in check
+            context 'but one square of route is in check' do
+              it 'returns false' do
+                board.delete_at([7,4])
+                board.delete_at([7,3])
+                board.delete_at([7,2])
+                board.delete_at([6,3])
+                board.move([0,1],[2,3])
+                # board.visualise
+                expect(board.valid_move?([7,5],[7,3],:white)).to be_falsey
+              end
+            end
+            context 'rook is in check but route isn\'t' do
+              it 'returns true' do
+                board.delete_at([7,4])
+                board.delete_at([7,3])
+                board.delete_at([7,2])
+                board.delete_at([6,1])
+                board.move([0,1],[2,1])
+                # board.visualise
+                expect(board.valid_move?([7,5],[7,3],:white)).to be_truthy
+              end
+            end
+            context 'rook has already moved' do
+              it 'returns false' do
+                board.delete_at([7,4])
+                board.delete_at([7,3])
+                board.delete_at([7,2])
+                board.move([7,1],[7,2])
+                board.move([7,2],[7,1])
+                # board.visualise
+                expect(board.valid_move?([7,5],[7,3],:white)).to be_falsey
+              end
+            end
+          end # three empty spaces queenside
+        end
+      end # not in check
+      context 'king is in check' do
+        it 'returns false' do
+          board.delete_at([6,5])
+          board.delete_at([7,6])
+          board.delete_at([7,7])
+          board.move([0,4],[2,5])
+          # board.visualise
+          expect(board.valid_move?([7,5],[7,7],:white)).to be_falsey
+        end
+      end
+      context 'black king' do
+        context 'user tries to castle queenside' do
           it 'returns true' do
-            board.delete_at([7,6])
-            board.delete_at([7,7])
-            board.visualise
-            expect(board.valid_move?([7,5],[7,7],:white)).to be_truthy
+            board.delete_at([0,4])
+            board.delete_at([0,3])
+            board.delete_at([0,2])
+            # board.visualise
+            expect(board.valid_move?([0,5],[0,3],:black)).to be_truthy
+          end
+        end
+        context 'user tries to castle kingside' do
+          it 'returns true' do
+            board.delete_at([0,6])
+            board.delete_at([0,7])
+            # board.visualise
+            expect(board.valid_move?([0,5],[0,7],:black)).to be_truthy
           end
         end
       end
-    end
+    end # the king
 
-  end
+  end # valid_move
 
   describe '#move' do
     it 'creates a piece of same class as starting square on target square' do
