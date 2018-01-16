@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'player'
+require_relative 'text'
 require 'pry'
 
 
@@ -9,15 +10,22 @@ class Game
   def new_game
     @board = Board.new
     @contents = @board.contents
+    @text = Text.new
+    @text.title
     @board.visualise
+    @text.introduce
     create_players
     set_current_player
   end
 
   def new_turn
     loop do
-      #binding.pry
-      moves = @current_player.elicit_move
+      begin
+         moves = @current_player.elicit_move
+      rescue
+        puts "Not a valid input!"
+        redo
+      end
       start = moves[0]
       target = moves[1]
       #binding.pry
