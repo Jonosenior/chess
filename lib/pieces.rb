@@ -36,7 +36,7 @@ class Pawn < Piece
   end
 
   def moveset_black(y,x)
-      @first_move ? [[y+1, x],[y+2,x],[y+1, x+1],[y+1, x-1]] : [[y-1,x],[y+1, x+1],[y+1, x-1]]
+    @first_move ? [[y+1, x],[y+2,x],[y+1, x+1],[y+1, x-1]] : [[y+1,x],[y+1, x+1],[y+1, x-1]]
   end
 
 end
