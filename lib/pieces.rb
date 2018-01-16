@@ -6,8 +6,8 @@ class Piece
     @location = location
   end
 
-  def board_limits(x,y)
-    x < 0 || x > 7 || y < 1 || y > 8
+  def board_limits(y,x)
+    y < 0 || y > 7 || x < 1 || x > 8
   end
 
 end
@@ -58,8 +58,8 @@ class Knight < Piece
     possible_moves.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
-  def legal_knight_move?(start_position,finish_position)
-    (start_position[0] - finish_position[0]).abs + (start_position[1] - finish_position[1]).abs == 3
+  def legal_knight_move?(start_position,target_position)
+    (start_position[0] - target_position[0]).abs + (start_position[1] - target_position[1]).abs == 3
   end
 
   def possible_rows
@@ -106,48 +106,48 @@ class Bishop < Piece
   end
 
   def moveset
-    x = location[0]
-    y = location[1]
+    y = location[0]
+    x = location[1]
 
-    [top_right_diagonal(x,y)] + [top_left_diagonal(x,y)] + [bottom_left_diagonal(x,y)] + [bottom_right_diagonal(x,y)]
+    [top_right_diagonal(y,x)] + [top_left_diagonal(y,x)] + [bottom_left_diagonal(y,x)] + [bottom_right_diagonal(y,x)]
   end
 
-  def top_right_diagonal(x,y)
+  def top_right_diagonal(y,x)
     tr_diagonal = []
-    until board_limits(x,y)
-      tr_diagonal << [x,y]
-      x -= 1
-      y += 1
+    until board_limits(y,x)
+      tr_diagonal << [y,x]
+      y -= 1
+      x += 1
     end
     tr_diagonal
   end
 
-  def top_left_diagonal(x,y)
+  def top_left_diagonal(y,x)
     tl_diagonal = []
-    until board_limits(x,y)
-      tl_diagonal << [x,y]
-      x -= 1
+    until board_limits(y,x)
+      tl_diagonal << [y,x]
       y -= 1
+      x -= 1
     end
     tl_diagonal
   end
 
-  def bottom_left_diagonal(x,y)
+  def bottom_left_diagonal(y,x)
     bl_diagonal = []
-    until board_limits(x,y)
-      bl_diagonal << [x,y]
-      x += 1
-      y -= 1
+    until board_limits(y,x)
+      bl_diagonal << [y,x]
+      y += 1
+      x -= 1
     end
     bl_diagonal
   end
 
-  def bottom_right_diagonal(x,y)
+  def bottom_right_diagonal(y,x)
     br_diagonal = []
-    until board_limits(x,y)
-      br_diagonal << [x,y]
-      x += 1
+    until board_limits(y,x)
+      br_diagonal << [y,x]
       y += 1
+      x += 1
     end
     br_diagonal
   end
@@ -181,11 +181,11 @@ class King < Piece
   end
 
   def moveset
-    x = location[0]
-    y = location[1]
+    y = location[0]
+    x = location[1]
 
-    moveset = [[x-1,y],[x-1,y-1],[x,y-1],[x+1,y-1],[x+1,y],[x+1,y+1],[x,y+1],[x-1,y+1]]
-    moveset << [x,y-2] << [x,y+2] if @first_move
+    moveset = [[y-1,x],[y-1,x-1],[y,x-1],[y+1,x-1],[y+1,x],[y+1,x+1],[y,x+1],[y-1,x+1]]
+    moveset << [y,x-2] << [y,x+2] if @first_move
     moveset.delete_if { |a| board_limits(a[0],a[1]) }
   end
 
