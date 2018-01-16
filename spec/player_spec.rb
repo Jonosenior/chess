@@ -51,21 +51,6 @@ describe Player do
       end
     end
 
-    context 'user enters an incorrect string' do
-      context 'that matches non-existent square' do
-        it 'raises an "invalid_input" error' do
-          allow(player).to receive(:gets).and_return("h9 to a0")
-          expect { player.elicit_move }.to raise_error('invalid_input')
-        end
-      end
-
-      context 'that has too few characters' do
-        it 'raises an "invalid_input" error' do
-          allow(player).to receive(:gets).and_return("a1 to b")
-          expect { player.elicit_move }.to raise_error('invalid_input')
-        end
-      end
-    end
   end
 
 end
