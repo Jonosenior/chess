@@ -2,11 +2,11 @@
 
 This is a command line game of chess for two players, written in Ruby.
 
-It includes all the rules of chess (including tricky ones like castling, en passant and pawn promotion).
-
-![Screenshot](images/chess_opening.png)
+It enforces all the rules of chess (including tricky ones like castling, en passant and pawn promotion), and includes fairly comprehensive test coverage (over a hundred individual tests).
 
 It's the final project of the Ruby section of [The Odin Project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project).
+
+![Screenshot](images/chess_opening.png)
 
 ## Installation
 
@@ -35,7 +35,9 @@ $ ruby lib/game.rb
 
   * Testing. This was the most comprehensive testing that I've had to do, and I found myself in a good workflow of creating a new feature, then testing it extensively before moving on to the next feature. I've tried to follow Sandi Metz's advice in POODR to test only the public interface (eg test #valid_move? method directly, rather than its various helpers). I understand that the use of multiple nested 'context' blocks is normally frowned upon in Rspec, but it seemed unavoidable when trying to thoroughly examine multiple possible scenarios in a game of chess.
 
-  * Some conventions are broken here, but seem defensible in context of the game. For example my #valid_move? method, which is very long and consists of a series of return false if ... statements. Normally not good practice, but my hands are tied by the rules of chess. Similarly the four helper methods for the bishop's moveset (top right diagonal, top left diagonal etc) are repetitive, but provide readabiliity which would be sacrificed if they were streamlined. Another EG of this: nesting context statements.
+  * Similarly, I'm aware that some of my code breaks normal convention - for instance the #valid_move? method in Board is quite long at 14 lines, and is almost entirely comprised of 'return false if...' statements, which looks quite ugly. But I couldn't see a way around this, and the clarity of having every a single method evaluate every condition of a valid move is very useful.
+
+  * Repetition. I was worried that certain parts of my code weren't DRY enough, specifically the four or so methods that iterate over every piece on the board, and the helper methods for the Bishop's moveset, and asked for help at the amazing Open Tech School Ruby Co-Learning group in Berlin. They advised me that the repetition wasn't extreme, and that any solution would drastically reduce readability, so it wasn't worth refactoring.
 
   * My code was so elegant before I had to account for all the unsual moves... It was painful to see my straightforward code marred by the ugliness of 'if class == Pawn then...' statements, but this was unavoidable. Pawn's unusual moveset, en passant, promotion, castling - these all added extra complications which I had to account for.
 

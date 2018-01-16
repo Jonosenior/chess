@@ -1,5 +1,3 @@
-require 'pry'
-
 class Player
 
   attr_reader :colour, :name
@@ -18,29 +16,23 @@ class Player
     puts "\n\n#{@name.upcase}"
     puts "Enter move (for example 'b1 to c3'):"
     moves = convert_to_move(gets.chomp)
-    #binding.pry
     while !moves
       puts "That square doesn't exist!"
       puts "\nEnter move (for example 'b1 to c3'):"
       moves = convert_to_move(gets.chomp)
     end
     moves
-    #convert_to_move(gets.chomp)
   end
 
   def convert_to_move(input)
     moves = alphanumeric_pairs(input)
     moves = moves.map { |move| convert(move) }
-    #puts "#{moves}"
-    # while !valid_output?(moves)
-    #   puts "Not a valid move!"
     valid_output?(moves) ? moves : false
   end
 
   def convert(input)
     row = convert_row(input[1].to_i)
     column = convert_column(input[0])
-    # binding.pry
     [row, column]
   end
 
@@ -50,13 +42,11 @@ class Player
 
   def convert_column(letter)
     columns = {"A" => 1, "B" => 2, "C" => 3, "D" => 4, "E" => 5, "F" => 6, "G" => 7, "H" => 8}
-    # binding.pry
     columns[letter.upcase]
   end
 
   def convert_row(number)
     rows = {8 => 0, 7 => 1, 6 => 2, 5 => 3, 4 => 4, 3 => 5, 2 => 6, 1 => 7}
-    # binding.pry
     rows[number]
   end
 
@@ -84,14 +74,3 @@ class Player
   end
 
 end
-# player = Player.new(1, :white)
-# input = player.elicit_move
-# puts input
-
-#allow(player).to receive(:gets).and_return("g1 to h3")
-#expect(player.elicit_move).to eq([[7,7],[5,8]])
-
-# puts player.elicit_pawn_promotion
-
-# player = Player.new(1, :black)
-# puts player.elicit_move

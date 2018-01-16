@@ -1,5 +1,3 @@
-
-
 class Text
   def title
     puts "
@@ -16,7 +14,4 @@ class Text
 "
   end
 
-  def introduce
-
-  end
 end

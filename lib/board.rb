@@ -34,7 +34,7 @@ class Board
     puts [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map {|square| square.center(3)}.join(" ") + "\n\n"
 		@contents.map do |line|
 			puts line.map { |square| square =~ /\w|\s/ ? square.center(3) : square.icon.center(3) }.join(" ")
-      puts #'   ├────┼────┼────┼────┼────┼────┼────┼────┤'
+      puts "\n"
 		end
 	end
 
@@ -62,42 +62,35 @@ class Board
   end
 
   def move(start, target)
-    # binding.pry
     if castling_move?(start, target) then move_castling_rook(start, target) end
     if en_passant_attack?(start, target) then delete_en_passant(start, target) end
     piece = return_piece_at(start)
     create_new_piece_at(piece, target)
     delete_at(start)
-    #puts "#{piece.first_move}"
   end
 
   def valid_move?(start, target, player_colour)
-    #puts "Start: #{start}, #{target}, #{player_colour}"
     return false if outside_board?(start) || outside_board?(target)
     return false if empty_sq?(start)
     return false if start == target
     piece = return_piece_at(start)
     return false if player_colour != piece.colour
-    return false if !target_within_moveset?(target, piece.moveset) # unless piece.class == Pawn
+    return false if !target_within_moveset?(target, piece.moveset)
     return false if friendly_fire?(piece, target)
     if piece.class == Rook || piece.class == Bishop || piece.class == Queen
       return false if route_blocked?(start, target)
     end
     if piece.class == Pawn then return false if !valid_pawn_move?(piece, target) end
     return false if own_king_in_check?(start, target) unless castling_move?(start, target)
-    # binding.pry
     if castling_move?(start, target) then return false if !valid_castling_move?(piece, target) end
-    #binding.pry
     true
   end
 
   def valid_castling_move?(piece, target)
     rook = return_castling_rook(piece.location, target)
-    # binding.pry
     return false if rook.class != Rook || !rook.first_move
     return false if route_blocked?(rook.location, piece.location)
     return false if piece_under_attack?(piece.location, piece.colour)
-    # binding.pry
     route = intermediary_squares(rook.location, piece.location)
     return false if route_in_check?(route, piece.colour)
     true
@@ -105,14 +98,9 @@ class Board
 
   def piece_under_attack?(location, defender_colour = return_piece_at(location).colour)
     attacker_colour = other_colour(defender_colour)
-    #puts king_location
     @contents.each do |row|
       row.each do |piece|
         next if empty_sq?(piece) || piece.colour != attacker_colour
-      #  puts "#{piece.moveset}" if piece.class == Queen
-      #  moveset = piece.moveset
-        #puts "piece location: #{piece.location}"
-        #binding.pry
         return true if valid_move?(piece.location, location, attacker_colour)
       end
     end
@@ -120,7 +108,6 @@ class Board
   end
 
   def move_castling_rook(king_start, king_target)
-    # binding.pry
     rook = return_castling_rook(king_start, king_target)
     kingside = (king_target[1] == king_start[1] + 2) ? true : false
     rook_target = (kingside) ? [king_start[0], king_start[1] + 1] : [king_start[0], king_start[1] - 1]
@@ -130,19 +117,8 @@ class Board
   def own_king_in_check?(start, target)
     piece = return_piece_at(start)
     target_piece = return_piece_at(target)
-    # puts "Own king colour: #{piece.colour}"
-    # puts "Start: #{start}"
-    # puts "Target piece class: #{target_piece.class}"
-    # puts "Target location: #{target}"
-    #puts "King location: #{king_location}"
-
     move(start, target)
     king_location = locate_piece(King, piece.colour)
-
-    # puts "King location: #{king_location}"
-    # puts "King class: #{return_piece_at(king_location).class}"
-    # puts "King location under attack? #{piece_under_attack?(king_location)}"
-    #binding.pry
     own_king_threatened = piece_under_attack?(king_location)
     undo_move(start, target, piece, target_piece)
     own_king_threatened
@@ -152,14 +128,11 @@ class Board
     delete_at(target_location)
     create_new_piece_at(start_piece, start_location)
     create_new_piece_at(target_piece, target_location)
-    #empty_sq?(target) ? create_new_piece_at(target_piece, target_location)
   end
 
   def stalemate?(player_colour)
     king_colour = other_colour(player_colour)
     king_location = locate_piece(King, king_colour)
-    #binding.pry
-    #puts "king location: #{king_location}"
     !piece_under_attack?(king_location, king_colour) && !any_valid_moves?(king_colour)
   end
 
@@ -168,8 +141,6 @@ class Board
       row.each do |piece|
         next if empty_sq?(piece) || piece.colour != king_colour
         piece.moveset.each do |target|
-          #puts "piece: #{piece}"
-          # binding.pry
           if target[0].class == Array
             target.each do |target_sub|
               return true if valid_move?(piece.location,target_sub,king_colour)
@@ -185,24 +156,15 @@ class Board
 
   def checkmate?(king_colour)
     king_location = locate_piece(King, king_colour)
-    #puts "King location: #{king_location}"
     attacker_locations = locate_attackers(king_location)
-    #puts attackers.length
-    #puts "Attackers: #{attackers}"
     return false if can_king_escape?(king_colour)
-    #puts "Checkmate past escape"
-    # puts attackers.length
-    # puts attackers.flatten.class
     if attacker_locations.length == 1
       attacker = return_piece_at(attacker_locations.flatten)
-      #puts attacker
       return false if can_attackers_be_captured?(attacker_locations)
       if attacker.class == Rook || attacker.class == Bishop || attacker.class == Queen
-        #puts "Attacker: #{attacker}"
         return false if can_attack_be_blocked?(attacker, king_colour)
       end
     end
-    #puts "Can attackers be captured: #{can_attackers_be_captured?(attackers)}"
     true
   end
 
@@ -263,20 +225,14 @@ class Board
   #PRIVATE
 
 
-# Careful that the method can deal w multiple attackers
   def can_attack_be_blocked?(attacker, king_colour)
-    #return false if attackers.length > 1
     king_location = locate_piece(King, king_colour)
     route = intermediary_squares(attacker.location, king_location) << attacker.location
-    #puts "#{route}"
     route.each do |square|
-      if piece_under_attack?(square, king_colour) #&& locate_attackers(square)
+      if piece_under_attack?(square, king_colour)
          blocker_locations = locate_attackers(square, other_colour(king_colour))
          blocker_locations = remove_king(blocker_locations)
          return true if !blocker_locations.empty?
-        #  #return false if blocker_locations.length > 1
-        #  blocker = return_piece_at(blocker_locations.flatten)
-        #  return true if blocker.class != King
        end
     end
     false
@@ -292,15 +248,11 @@ class Board
   end
 
   def can_king_escape?(king_colour)
-
     attacker_colour = other_colour(king_colour)
     king_location = locate_piece(King, king_colour)
     king = return_piece_at(king_location)
-    #puts "#{king.location}"
     valid_moves = king.moveset.select {|move| valid_move?(king_location, move, king_colour)}
-    #puts "valid moves: #{valid_moves}"
     out_of_check = valid_moves.select {|move| !piece_under_attack?(move, king_colour)}
-    #puts "out of check: #{out_of_check}"
     out_of_check.length > 0
   end
 
@@ -352,13 +304,11 @@ class Board
       end
     end
     locations = locations.flatten if locations.length == 1
-    # => puts "Locations: #{locations}"
     locations
   end
 
   def route_blocked?(start, target)
     route = intermediary_squares(start, target)
-    #puts "ROUTE: #{route}"
     route.any? {|square| return_piece_at(square) != ' '}
   end
 
@@ -366,7 +316,6 @@ class Board
     moveset = return_piece_at(start).moveset
     line = moveset.select {|a| a.include?(target)}.flatten(1)
     start_index, target_index = line.index(start), line.index(target)
-    # binding.pry
     if start_index > target_index
       line = line.reverse
       start_index, target_index = line.index(start), line.index(target)
@@ -410,7 +359,6 @@ class Board
   def return_castling_rook(start, target)
     kingside = (target[1] == start[1] + 2) ? true : false
     rook_location = kingside ? [target[0], target[1] + 1] : [target[0], target[1] - 2]
-    # binding.pry
     return_piece_at(rook_location)
   end
 
@@ -430,29 +378,3 @@ class Board
   end
 
 end
-
-
-
- # board = Board.new
- # puts "#{board.contents[0][1].moveset}"
- # start = [0,5]
- # target = [0,4]
- # puts board.castling_move?(start, target)
- # puts board.return_castling_rook(start, target).location
-
-
-# [  X  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
-#
-# [  X  , "1,1", "1,2", "1,3", "1,4", "1,5", "1,6", "1,7", "1,8"]
-#
-# [  X  , "2,1", "2,2", "2,3", "2,4", "2,5", "2,6", "2,7", "2,8"]
-#
-# [  X  , "3,1", "3,2", "3,3", "3,4", "3,5", "3,6", "3,7", "3,8"]
-#
-# [  X  , "4,1", "4,2", "4,3", "4,4", "4,5", "4,6", "4,7", "4,8"]
-#
-# [  X  , "5,1", "5,2", "5,3", "5,4", "5,5", "5,6", "5,7", "5,8"]
-#
-# [  X  , "6,1", "6,2", "6,3", "6,4", "6,5", "6,6", "6,7", "6,8"]
-#
-# [  X  , "7,1", "7,2", "7,3", "7,4", "7,5", "7,6", "7,7", "7,8"]

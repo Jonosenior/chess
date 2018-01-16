@@ -1,9 +1,6 @@
 require_relative 'board'
 require_relative 'player'
 require_relative 'text'
-require 'pry'
-
-
 
 class Game
 
@@ -13,22 +10,15 @@ class Game
     @text = Text.new
     @text.title
     @board.visualise
-    @text.introduce
     create_players
     set_current_player
   end
 
   def new_turn
     loop do
-      begin
-         moves = @current_player.elicit_move
-      rescue
-        puts "Not a valid input!"
-        redo
-      end
+      moves = @current_player.elicit_move
       start = moves[0]
       target = moves[1]
-      #binding.pry
       if !@board.valid_move?(start, target, @current_player.colour)
         puts "Not a valid move!"
         redo
@@ -44,11 +34,12 @@ class Game
     status = @board.game_status(@current_player.colour)
     case status
     when :checkmate
-      puts "checkmate!"
+      puts "Checkmate!\n"
       puts "Congratulations #{@current_player.name}! You won."
       exit
     when :stalemate
-      puts "Stalemate!"
+      puts "Stalemate!\n"
+      puts "Everyone's a loser..."
       exit
     when :check
       puts "Check!"
@@ -97,19 +88,3 @@ end
 game = Game.new
 game.new_game
 game.new_turn
-#            "A"  "B"     "C"    "D"    "E"     "F"   "G"     "H"
-# [  8  , "0,1", "0,2", "0,3", "0,4", "0,5", "0,6", "0,7", "0,8"]
-#
-# [  7  , "1,1", "1,2", "1,3", "1,4", "1,5", "1,6", "1,7", "1,8"]
-#
-# [  6  , "2,1", "2,2", "2,3", "2,4", "2,5", "2,6", "2,7", "2,8"]
-#
-# [  5  , "3,1", "3,2", "3,3", "3,4", "3,5", "3,6", "3,7", "3,8"]
-#
-# [  4  , "4,1", "4,2", "4,3", "4,4", "4,5", "4,6", "4,7", "4,8"]
-#
-# [  3  , "5,1", "5,2", "5,3", "5,4", "5,5", "5,6", "5,7", "5,8"]
-#
-# [  2  , "6,1", "6,2", "6,3", "6,4", "6,5", "6,6", "6,7", "6,8"]
-#
-# [  1  , "7,1", "7,2", "7,3", "7,4", "7,5", "7,6", "7,7", "7,8"]
