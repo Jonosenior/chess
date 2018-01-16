@@ -30,7 +30,7 @@ class Board
   public
 
   def visualise
-    puts "\n\n\n"
+    puts "\n"
     puts [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map {|square| square.center(3)}.join(" ") + "\n\n"
 		@contents.map do |line|
 			puts line.map { |square| square =~ /\w|\s/ ? square.center(3) : square.icon.center(3) }.join(" ")
@@ -64,6 +64,7 @@ class Board
   def move(start, target)
     # binding.pry
     if castling_move?(start, target) then move_castling_rook(start, target) end
+    if en_passant_attack?(start, target) then delete_en_passant(start, target) end
     piece = return_piece_at(start)
     create_new_piece_at(piece, target)
     delete_at(start)
@@ -222,12 +223,24 @@ class Board
     [row,col]
   end
 
+  def en_passant_attack?(start, target)
+    piece = return_piece_at(start)
+    player_colour = piece.colour
+    piece.class == Pawn && target == return_en_passant_square(player_colour)
+  end
+
   def set_en_passant_square(pawn_colour,target)
     if pawn_colour == :white
       @en_passant_white = passed_square(:white,target)
     else
       @en_passant_black = passed_square(:black,target)
     end
+  end
+
+  def delete_en_passant(start, target)
+    player_colour = return_piece_at(start).colour
+    passed_pawn = player_colour == :white ? [target[0] + 1, target[1]] : [target[0] - 1, target[1]]
+    delete_at(passed_pawn)
   end
 
   def return_en_passant_square(player_colour)
@@ -418,7 +431,10 @@ class Board
 
 end
 
- #board = Board.new
+
+
+ # board = Board.new
+ # puts "#{board.contents[0][1].moveset}"
  # start = [0,5]
  # target = [0,4]
  # puts board.castling_move?(start, target)
