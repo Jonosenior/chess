@@ -1,6 +1,6 @@
 # Chess
 
-This is a command line game of chess for two players, written in Ruby.
+This is a terminal game of chess for two players, written in Ruby.
 
 It enforces all the rules of chess (including tricky ones like castling, en passant and pawn promotion), and includes fairly comprehensive test coverage (over a hundred individual tests).
 
